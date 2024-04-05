@@ -1,1 +1,5 @@
-# database_search
+# Dependencies
+- Dowload poetry dependency managment and run:
+
+  poetry install
+  
