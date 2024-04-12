@@ -3,9 +3,9 @@ from langchain.chains import create_sql_query_chain
 from langchain_openai import ChatOpenAI
 
 db = SQLDatabase.from_uri("sqlite:///C:/Users/Nikola/DataGripProjects/myFirstProject/identifier.sqlite", sample_rows_in_table_info=3)
-# print(db.dialect)
-# print(db.get_usable_table_names())
-# print(db.run("SELECT * FROM Customer LIMIT 10;"))
+print(db.dialect)
+print(db.get_usable_table_names())
+print(db.run("SELECT * FROM Customer LIMIT 10;"))
 
 
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature="0", openai_api_key = "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")

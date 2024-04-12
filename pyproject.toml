@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Searching database wiht LLMs"
 authors = ["nnikolovskiii <nikolovski.nikola42@gmail.com>"]
 readme = "README.md"
+packages = [{include = "app"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -11,6 +12,10 @@ langchain = "^0.1.14"
 langchain-community = "^0.0.31"
 langchain-experimental = "^0.0.56"
 langchain-openai = "^0.1.1"
+pydantic = "^2.6.4"
+chromadb = "^0.4.24"
+langchain-core = "^0.1.42"
+qdrant-client = "^1.8.2"
 
 
 [build-system]
