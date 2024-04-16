@@ -20,10 +20,6 @@ ENV VIRTUAL_ENV=/.venv \
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY app ./app
+COPY ./app ./app
 
-
-WORKDIR /app/models
-
-
-ENTRYPOINT ["python", "agent.py"]
+ENTRYPOINT ["python", "-m", "app.main"]
