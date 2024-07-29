@@ -16,6 +16,8 @@ pydantic = "^2.6.4"
 chromadb = "^0.4.24"
 langchain-core = "^0.1.42"
 qdrant-client = "^1.8.2"
+psycopg2-binary = "^2.9.9"
+faker = "^26.0.0"
 
 
 [build-system]
