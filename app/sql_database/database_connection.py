@@ -5,7 +5,7 @@ import psycopg2
 from app.models.enums.postgres_data_types import PostgresDataType
 
 db_config = {
-    'dbname': 'sample-database',
+    'dbname': 'sample-sql_database',
     'user': 'postgres',
     'password': 'postgres',
     'host': 'localhost',

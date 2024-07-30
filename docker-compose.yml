@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sample-database
+      POSTGRES_DB: sample-sql_database
     ports:
       - "9871:5432"
     volumes:

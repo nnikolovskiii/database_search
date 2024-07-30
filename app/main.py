@@ -2,7 +2,7 @@ from langchain_openai import OpenAIEmbeddings
 
 from app.database.database_connection import connect_database
 from app.utils.database_schema_transfer import upload_database_tables_to_vectorstore
-from app.vectorstore.qdrant import get_qdrant_vectorstore, add_collection
+from app.vectorstore.qdrant import add_collection
 
 print("Hello world!")
 url = "sqlite:///C:/Users/Nikola/DataGripProjects/myFirstProject/identifier.sqlite"

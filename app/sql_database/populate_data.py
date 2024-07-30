@@ -7,7 +7,7 @@ from faker import Faker
 fake = Faker()
 
 db_config = {
-    'dbname': 'sample-database',
+    'dbname': 'sample-sql_database',
     'user': 'postgres',
     'password': 'postgres',
     'host': 'localhost',
