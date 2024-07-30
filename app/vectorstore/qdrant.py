@@ -18,7 +18,7 @@ def upsert_record(
         vector: List[float],
         metadata: Dict[str, Any],
         collection_name: str
-):
+) -> None:
     unique_id = str(uuid.uuid4())
 
     client.upsert(
@@ -31,3 +31,4 @@ def upsert_record(
             ),
         ],
     )
+

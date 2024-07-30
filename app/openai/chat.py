@@ -1,8 +1,6 @@
 import os
-from langchain_community.utilities import SQLDatabase
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
-from app.chains.main_chain import create_chain
 from langchain_core.messages.base import BaseMessage
 
 

@@ -1,7 +1,8 @@
 import os
-from typing import List
 from dotenv import load_dotenv
-from langchain_openai import OpenAIEmbeddings
+import requests
+import json
+from typing import List
 
 
 def embedd_content(
@@ -9,10 +10,24 @@ def embedd_content(
 ) -> List[float]:
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")
+    url = 'https://api.openai.com/v1/embeddings'
 
-    if not openai_api_key:
-        raise ValueError("OpenAI API key not found. Please set it in the .env file.")
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {openai_api_key}'
+    }
 
-    embedding_model = OpenAIEmbeddings(api_key=openai_api_key, model="text-embedding-3-small")
-    vector = embedding_model.embed_query(content)
-    return vector
+    data = {
+        'input': content,
+        'model': 'text-embedding-3-small'
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    if response.status_code == 200:
+        response_data = response.json()
+        return response_data['data'][0]['embedding']
+    else:
+        response.raise_for_status()
+
+print(len(embedd_content("Hello World")))
