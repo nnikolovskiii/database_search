@@ -3,6 +3,7 @@ from typing import List, Tuple
 import psycopg2
 
 from app.models.enums.postgres_data_types import PostgresDataType
+from app.vectorstore.qdrant import upsert_record
 
 db_config = {
     'dbname': 'sample-sql_database',
@@ -52,5 +53,3 @@ def get_columns_by_table(
     conn.close()
 
     return [(column_name, PostgresDataType(column_type)) for column_name, column_type in columns]
-
-print(get_columns_by_table("orders"))

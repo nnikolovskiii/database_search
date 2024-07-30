@@ -10,7 +10,7 @@ def message_chat_llm(
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")
     chat_llm = ChatOpenAI(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         temperature="0",
         openai_api_key = openai_api_key
     )
@@ -18,4 +18,5 @@ def message_chat_llm(
     return chat_llm.invoke(message)
 
 print(message_chat_llm("How are you today?"))
+
 

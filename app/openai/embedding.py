@@ -4,6 +4,8 @@ import requests
 import json
 from typing import List
 
+from app.vectorstore.qdrant import upsert_record
+
 
 def embedd_content(
         content: str
@@ -30,4 +32,9 @@ def embedd_content(
     else:
         response.raise_for_status()
 
-print(len(embedd_content("Hello World")))
+vector = embedd_content("Hello World")
+upsert_record(
+        vector = vector,
+        metadata= {"table":"Test1"},
+        collection_name = "database-search"
+)

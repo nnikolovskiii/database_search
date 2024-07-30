@@ -31,4 +31,3 @@ def upsert_record(
             ),
         ],
     )
-
