@@ -1,22 +1,52 @@
-from typing import List
+from typing import List, Tuple
 
-from langchain_community.utilities import SQLDatabase
-import ast
-import re
+import psycopg2
+
+db_config = {
+    'dbname': 'sample-database',
+    'user': 'postgres',
+    'password': 'postgres',
+    'host': 'localhost',
+    'port': '9871'
+}
 
 
-def connect_database(
-        database_uri: str,
-) -> SQLDatabase:
-    db = SQLDatabase.from_uri(database_uri, sample_rows_in_table_info=0)
-    return db
-
-
-def query_as_list(
-        db: SQLDatabase,
-        query: str
+def get_tables(
+        table_schema: str = "public"
 ) -> List[str]:
-    res = db.run(query)
-    res = [el for sub in ast.literal_eval(res) for el in sub if el]
-    res = [re.sub(r"\b\d+\b", "", string).strip() for string in res]
-    return res
+    conn = psycopg2.connect(**db_config)
+    cur = conn.cursor()
+
+    cur.execute(f"""
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = '{table_schema}';
+    """)
+
+    tables = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [table[0] for table in tables]
+
+
+def get_columns_by_table(
+        table_name: str
+) -> List[Tuple[str, str]]:
+    conn = psycopg2.connect(**db_config)
+    cur = conn.cursor()
+
+    cur.execute(f"""
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name = '{table_name}'
+          AND table_schema = 'public';
+    """)
+
+    columns = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return columns
