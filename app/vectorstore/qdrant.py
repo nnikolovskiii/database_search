@@ -1,30 +1,33 @@
-from langchain_core.embeddings import Embeddings
-from langchain_community.vectorstores import Qdrant
+from typing import List, Dict, Any
+import uuid
 from qdrant_client import QdrantClient, models
 
-qdrant_client = QdrantClient(url="http://localhost:6333")
+client = QdrantClient(url="http://localhost:6333")
 
 
-def get_qdrant_vectorstore(
-        collection_name: str,
-        embeddings: Embeddings,
-        client: QdrantClient = qdrant_client,
-) -> Qdrant:
-    qdrant = Qdrant(client, collection_name, embeddings)
-    return qdrant
+def create_collection(
+        collection_name: str
+):
+    client.create_collection(
+        collection_name=collection_name,
+        vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
+    )
 
 
-def add_collection(
-        collection_name: str,
-        embeddings: Embeddings,
-        client: QdrantClient = qdrant_client,
+def upsert_record(
+        vector: List[float],
+        metadata: Dict[str, Any],
+        collection_name: str
+):
+    unique_id = str(uuid.uuid4())
 
-) -> Qdrant:
-    client.create_collection(collection_name=collection_name,
-                             vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
-                             )
-    qdrant = Qdrant(client=client, collection_name=collection_name, embeddings=embeddings)
-    print(qdrant.collection_name)
-    return qdrant
-
-add_collection("database")
+    client.upsert(
+        collection_name=collection_name,
+        points=[
+            models.PointStruct(
+                id=unique_id,
+                payload=metadata,
+                vector=vector,
+            ),
+        ],
+    )

@@ -2,6 +2,8 @@ from typing import List, Tuple
 
 import psycopg2
 
+from app.models.enums.postgres_data_types import PostgresDataType
+
 db_config = {
     'dbname': 'sample-database',
     'user': 'postgres',
@@ -33,7 +35,7 @@ def get_tables(
 
 def get_columns_by_table(
         table_name: str
-) -> List[Tuple[str, str]]:
+) -> List[Tuple[str, PostgresDataType]]:
     conn = psycopg2.connect(**db_config)
     cur = conn.cursor()
 
@@ -49,4 +51,6 @@ def get_columns_by_table(
     cur.close()
     conn.close()
 
-    return columns
+    return [(column_name, PostgresDataType(column_type)) for column_name, column_type in columns]
+
+print(get_columns_by_table("orders"))
