@@ -12,11 +12,10 @@ def message_chat_llm(
     chat_llm = ChatOpenAI(
         model="gpt-4o",
         temperature="0",
-        openai_api_key = openai_api_key
+        openai_api_key=openai_api_key
     )
 
     return chat_llm.invoke(message)
 
+
 print(message_chat_llm("How are you today?"))
-
-

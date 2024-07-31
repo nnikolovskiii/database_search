@@ -31,3 +31,6 @@ def upsert_record(
             ),
         ],
     )
+
+
+# create_collection("database_search")
