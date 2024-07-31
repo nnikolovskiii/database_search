@@ -1,6 +1,8 @@
+from typing import Dict, Any
+
 from app.openai.embedding import embedd_content
 from app.sql_database.database_connection import *
-from app.vectorstore.qdrant import upsert_record
+from app.vectorstore.qdrant import upsert_record, client
 
 
 def embedd_table_names():
@@ -55,6 +57,28 @@ def embedd_string_values():
                 upsert_record(vector, metadata, "database_search")
 
 
+def search_embeddings(query: str, collection_name: str = "database_search", top_k: int = 5) -> List[Dict[str, Any]]:
+    vector = embedd_content(query)
+
+    search_result = client.search(
+        collection_name=collection_name,
+        query_vector=vector,
+        limit=top_k
+    )
+
+    return search_result
+
+
+query = "Find columns related to customer names"
+results = search_embeddings(query)
+
+for result in results:
+    print(
+        f"Table: {result['payload']['table_name']}, Column: {result['payload'].get('column_name', 'N/A')}, Value: {result['payload'].get('value', 'N/A')}")
+
+
 embedd_string_values()
 embedd_table_names()
 embedd_columns()
+
+
