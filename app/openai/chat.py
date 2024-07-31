@@ -1,21 +1,44 @@
 import os
-from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
-from langchain_core.messages.base import BaseMessage
+import requests
+import json
+from typing import List
 
 
-def message_chat_llm(
-        message: str
-) -> BaseMessage:
+def chat_with_openai(
+        message: str,
+        system_message: str = "You are a helpful assistant."
+) -> str:
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")
-    chat_llm = ChatOpenAI(
-        model="gpt-4o",
-        temperature="0",
-        openai_api_key=openai_api_key
-    )
+    url = 'https://api.openai.com/v1/chat/completions'
 
-    return chat_llm.invoke(message)
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {openai_api_key}'
+    }
+
+    data = {
+        'model': 'gpt-4o',
+        'messages': [
+            {
+                "role": "system",
+                "content": system_message
+            },
+            {
+                "role": "user",
+                "content": message
+            }
+        ]
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    if response.status_code == 200:
+        response_data = response.json()
+        return response_data['choices'][0]['message']['content']
+    else:
+        response.raise_for_status()
 
 
-print(message_chat_llm("How are you today?"))
+print(chat_with_openai("How are you?"))
