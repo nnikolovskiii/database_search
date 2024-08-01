@@ -26,7 +26,7 @@ services:
     image: neo4j:latest
     container_name: my_neo4j
     environment:
-      NEO4J_AUTH: neo4j_database/Test09875
+      NEO4J_AUTH: neo4j/Test09875
     ports:
       - "7474:7474"
       - "7687:7687"
