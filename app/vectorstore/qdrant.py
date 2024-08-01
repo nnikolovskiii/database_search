@@ -2,6 +2,8 @@ from typing import List, Dict, Any
 import uuid
 from qdrant_client import QdrantClient, models
 
+from app.openai.embedding import embedd_content
+
 client = QdrantClient(url="http://localhost:6333")
 
 
@@ -33,4 +35,31 @@ def upsert_record(
     )
 
 
-# create_collection("database_search")
+def search_embeddings(query: str, collection_name: str = "database_search", top_k: int = 5) -> List[Dict[str, Any]]:
+    vector = embedd_content(query)
+
+    search_result = client.search(
+        collection_name=collection_name,
+        query_vector=vector,
+        limit=top_k
+    )
+
+    results = []
+    for point in search_result:
+        result = {
+            "table_name": point.payload.get("table_name"),
+            "column_name": point.payload.get("column_name"),
+            "value": point.payload.get("value"),
+            "score": point.score
+        }
+        results.append(result)
+
+    return results
+
+
+query = "krstine23"
+results = search_embeddings(query)
+
+for result in results:
+    print(
+        f"Table: {result['table_name']}, Column: {result['column_name']}, Value: {result['value']}, Score: {result['score']}")

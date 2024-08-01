@@ -55,8 +55,8 @@ def get_columns_by_table(
 
 
 def get_active_table_names():
-    return list(["Users", "Categories", "Products", "Orders", "OrderItems", "Payments", "Carts", "CartItems", "Reviews",
-                 "Addresses", "PaymentMethods", "Shipments", "Discounts", "ShippingMethods", "ShippingRates"
+    return list(["users", "categories", "products", "orders", "orderitems", "payments", "carts", "cartitems", "reviews",
+                 "addresses", "paymentmethods", "shipments", "discounts", "shippingmethods", "shippingrates"
                  ])
 
 
