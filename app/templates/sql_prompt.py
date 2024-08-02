@@ -1,6 +1,7 @@
 def postgresql_template(
         table_info: str,
-        proper_nouns: str
+        proper_nouns: str,
+        query: str
 ) -> str:
     return f"""You are a Postgres expert. Given an input question, create a syntactically correct SQLite query to run.
     Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in double quotes (") to denote them as delimited identifiers.
@@ -13,6 +14,9 @@ def postgresql_template(
     Here is a non-exhaustive list of possible feature values. If filtering on a feature value make sure to check its spelling
     against this list first:
     {proper_nouns}
+    
+    Query:
+    {query}
     """
 
 
