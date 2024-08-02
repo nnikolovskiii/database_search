@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
-from typing import List
 
 
 def chat_with_openai(

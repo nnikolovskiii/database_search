@@ -16,4 +16,4 @@ def postgresql_template(
     """
 
 
-print(postgresql_template(table_info="Sports, Orders, Catgories", proper_nouns="Tennis, VOlleyball"))
+print(postgresql_template(table_info="Sports, Orders, Categories", proper_nouns="Tennis, Volleyball"))
