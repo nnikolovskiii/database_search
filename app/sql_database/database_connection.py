@@ -1,7 +1,9 @@
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Any
 import psycopg2
-
+from pydantic import BaseModel
 from app.models.enums.postgres_data_types import PostgresDataType
+from psycopg2.extras import RealDictCursor
+
 
 db_config = {
     'dbname': 'sample-database',
@@ -49,6 +51,8 @@ def get_tables_with_foreign_keys(
 
         if foreign_keys:
             all_foreign_keys[table] = foreign_keys
+        else:
+            all_foreign_keys[table] = []
 
     cur.close()
     conn.close()
@@ -76,25 +80,73 @@ def get_tables(
     return [table[0] for table in tables]
 
 
-def get_columns_by_table(
-        table_name: str
-) -> List[Tuple[str, PostgresDataType]]:
-    conn = psycopg2.connect(**db_config)
-    cur = conn.cursor()
+class Column(BaseModel):
+    name: str
+    data_type: PostgresDataType
+    is_nullable: bool
+    is_primary_key: bool = False
+    is_foreign_key: bool = False
 
-    cur.execute(f"""
-        SELECT column_name, data_type
+
+def get_columns_by_table(table_name: str) -> List[Column]:
+    conn = psycopg2.connect(**db_config)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Get column information
+    cur.execute("""
+        SELECT 
+            column_name,
+            data_type,
+            is_nullable
         FROM information_schema.columns
-        WHERE table_name = '{table_name}'
+        WHERE table_name = %s
           AND table_schema = 'public';
-    """)
+    """, (table_name,))
 
     columns = cur.fetchall()
+
+    # Get primary key columns
+    cur.execute("""
+        SELECT 
+            a.attname AS column_name
+        FROM 
+            pg_index i
+            JOIN pg_attribute a ON a.attnum = ANY(i.indkey)
+            JOIN pg_class c ON c.oid = i.indrelid
+            JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE 
+            c.relname = %s 
+            AND i.indisprimary;
+    """, (table_name,))
+    primary_key_columns = {row['column_name'] for row in cur.fetchall()}
+
+    # Get foreign key columns
+    cur.execute("""
+        SELECT 
+            kcu.column_name
+        FROM 
+            information_schema.table_constraints tco
+            JOIN information_schema.key_column_usage kcu 
+              ON kcu.constraint_name = tco.constraint_name
+              AND kcu.constraint_schema = tco.constraint_schema
+        WHERE 
+            tco.table_name = %s 
+            AND tco.constraint_type = 'FOREIGN KEY';
+    """, (table_name,))
+    foreign_key_columns = {row['column_name'] for row in cur.fetchall()}
 
     cur.close()
     conn.close()
 
-    return [(column_name, PostgresDataType(column_type)) for column_name, column_type in columns]
+    return [
+        Column(
+            name=col['column_name'],
+            data_type=PostgresDataType(col['data_type']),
+            is_nullable=(col['is_nullable'] == 'YES'),
+            is_primary_key=(col['column_name'] in primary_key_columns),
+            is_foreign_key=(col['column_name'] in foreign_key_columns)
+        ) for col in columns
+    ]
 
 
 def get_active_table_names():
@@ -138,3 +190,4 @@ def get_column_values(table_name: str, column_name: str) -> List[str]:
     conn.close()
 
     return [value[0] for value in values if value[0] is not None]
+

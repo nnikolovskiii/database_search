@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from neo4j import GraphDatabase
 from pydantic import BaseModel
@@ -17,6 +17,7 @@ class Node(BaseModel):
 
 class Relationship(BaseModel):
     type: str
+    properties: Optional[Dict[str, Any]] = None
 
 
 def _transform_properties(properties: Dict[str, Any]) -> str:
@@ -25,9 +26,10 @@ def _transform_properties(properties: Dict[str, Any]) -> str:
 
 def create_node(node: Node):
     with driver.session() as session:
-        properties = _transform_properties(node.properties)
-        cypher_query = f"CREATE (n:{node.type} {{{properties}}}) RETURN n"
-        session.run(cypher_query)
+        if not node_exists(node):
+            properties = _transform_properties(node.properties)
+            cypher_query = f"CREATE (n:{node.type} {{{properties}}}) RETURN n"
+            session.run(cypher_query)
 
 
 def node_exists(node: Node) -> bool:
@@ -46,7 +48,11 @@ def node_exists(node: Node) -> bool:
         return result.single() is not None
 
 
-def create_relationship(node1: Node, node2: Node, relationship: Relationship):
+def create_relationship(
+        node1: Node,
+        node2: Node,
+        relationship: Relationship,
+):
     if not node_exists(node1):
         create_node(node1)
     if not node_exists(node2):
@@ -55,6 +61,17 @@ def create_relationship(node1: Node, node2: Node, relationship: Relationship):
     with driver.session() as session:
         properties1 = _transform_properties(node1.properties)
         properties2 = _transform_properties(node2.properties)
-        cypher_query = f"""MATCH (node1:{node1.type} {{{properties1}}}), (node2:{node2.type} {{{properties2}}})
-        CREATE (node1)-[:{relationship.type}]->(node2)"""
+        relationship_prop = _transform_properties(relationship.properties) if relationship.properties else ""
+
+        relationship_properties_clause = f" {{{relationship_prop}}}" if relationship_prop else ""
+        cypher_query = f"""
+        MATCH (node1:{node1.type} {{{properties1}}}), (node2:{node2.type} {{{properties2}}})
+        CREATE (node1)-[:{relationship.type}{relationship_properties_clause}]->(node2)
+        """
+
         session.run(cypher_query)
+
+
+class Relationship(BaseModel):
+    type: str
+    properties: Optional[Dict[str, Any]]

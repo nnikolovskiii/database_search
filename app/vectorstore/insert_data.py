@@ -22,9 +22,9 @@ def embedd_columns():
         table_name = table
         columns = get_columns_by_table(table_name)
 
-        for column in columns:
-            column_name = column[0]
+        column_names = [column.name for column in columns]
 
+        for column_name in column_names:
             metadata = {
                 "table_name": table_name,
                 "column_name": column_name
@@ -54,8 +54,3 @@ def embedd_string_values():
                 vector = embedd_content(value)
 
                 upsert_record(vector, metadata, "database_search")
-
-
-# embedd_table_names()
-# embedd_columns()
-embedd_string_values()

@@ -55,11 +55,3 @@ def search_embeddings(query: str, collection_name: str = "database_search", top_
         results.append(result)
 
     return results
-
-
-Query = "krstine23"
-Results = search_embeddings(Query)
-
-for r in Results:
-    print(
-        f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}, Score: {r['score']}")

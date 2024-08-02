@@ -1,7 +1,7 @@
 from typing import List, Tuple
-
-from app.neo4j_database.neo4j_database import create_relationship, Node, Relationship
-from app.sql_database.database_connection import get_tables_with_foreign_keys
+from tqdm import tqdm
+from app.neo4j_database.neo4j_database import create_relationship, Node, Relationship, create_node
+from app.sql_database.database_connection import get_tables_with_foreign_keys, get_tables, get_columns_by_table
 from pydantic import BaseModel
 
 
@@ -35,8 +35,56 @@ def insert_tables_with_foreign_keys(
                     type="Table",
                     properties={"name": table_name}
                 ),
-                relationship=Relationship(type="FOREIGN_KEY")
+                relationship=Relationship(
+                    type="FOREIGN_KEY",
+                    properties=fk.model_dump()
+                )
+            )
+
+            create_relationship(
+                node1=Node(
+                    type="Table",
+                    properties={"name": table_name}
+                ),
+                node2=Node(
+                    type="Table",
+                    properties={"name": fk.to_table}
+                ),
+                relationship=Relationship(
+                    type="REFERENCED_BY",
+                    properties=fk.model_dump()
+                )
+            )
+
+        if len(fks) == 0:
+            create_node(
+                node=Node(
+                    type="Table",
+                    properties={"name": table_name}
+                )
             )
 
 
+def insert_columns():
+    tables = get_tables()
+    for table_name in tables:
+        columns = get_columns_by_table(table_name)
+
+        for column in columns:
+            create_relationship(
+                node1=Node(
+                    type="Table",
+                    properties={"name": table_name}
+                ),
+                node2=Node(
+                    type="Column",
+                    properties=column.model_dump()
+                ),
+                relationship=Relationship(
+                    type="HAS_COLUMN",
+                    properties=None
+                )
+            )
+
 insert_tables_with_foreign_keys()
+insert_columns()
