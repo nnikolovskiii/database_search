@@ -7,11 +7,11 @@ from faker import Faker
 fake = Faker()
 
 db_config = {
-    'dbname': 'sample-sql_database',
+    'dbname': 'sample-database',
     'user': 'postgres',
     'password': 'postgres',
     'host': 'localhost',
-    'port': '5432'
+    'port': '9871'
 }
 
 conn = psycopg2.connect(**db_config)
@@ -95,7 +95,6 @@ cursor.executemany(
     order_items
 )
 
-# Insert data into Payments table
 payments = []
 for i in range(1000):
     payments.append((i, random.uniform(0, 999), random_date(datetime(2020, 1, 1), datetime(2024, 7, 28)),
@@ -135,7 +134,6 @@ cursor.executemany(
     reviews
 )
 
-# Insert data into Addresses table
 addresses = []
 for i in range(1000):
     addresses.append((i, random.uniform(0, 999), fake.street_address(), fake.secondary_address(), fake.city(),
@@ -146,7 +144,6 @@ cursor.executemany(
     addresses
 )
 
-# Insert data into PaymentMethods table
 payment_methods = []
 for i in range(1000):
     payment_methods.append((i, random.uniform(0, 999), fake.credit_card_number(), fake.name(), random_date(datetime(2025, 1, 1), datetime(2030, 7, 28)),
