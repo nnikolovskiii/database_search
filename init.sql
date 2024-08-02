@@ -5,6 +5,16 @@
 -- Dumped from sql_database version 16.3 (Debian 16.3-1.pgdg120+1)
 -- Dumped by pg_dump version 16.3 (Ubuntu 16.3-1.pgdg22.04+1)
 
+-- Connect to the default database (usually 'postgres') to create the new database
+\connect postgres;
+
+-- Create the new database named 'sample-database'
+CREATE DATABASE "sample-database";
+
+-- Connect to the newly created database
+\connect "sample-database";
+
+-- Set various configuration parameters
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -16,24 +26,14 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
---
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
-
+-- Set the comment on the public schema
 COMMENT ON SCHEMA public IS 'standard public schema';
-
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- Name: abandonedcartitems; Type: TABLE; Schema: public; Owner: postgres
---
-
+-- Create the 'abandonedcartitems' table in the 'public' schema
 CREATE TABLE public.abandonedcartitems (
     abandoned_cart_item_id integer NOT NULL,
     abandoned_cart_id integer NOT NULL,
