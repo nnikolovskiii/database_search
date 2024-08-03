@@ -1,7 +1,10 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 from neo4j import GraphDatabase
 from pydantic import BaseModel
+from neo4j.graph import Node as Neo4jNode
+
+from app.sql_database.database_connection import Table, Column
 
 uri = "bolt://localhost:7687"
 username = "neo4j"
@@ -13,6 +16,14 @@ driver = GraphDatabase.driver(uri, auth=(username, password))
 class Node(BaseModel):
     type: str
     properties: Dict[str, Any]
+
+
+def create_node_from_neo4j(neo4j_node: Neo4jNode) -> Node:
+    data = {
+        'type': next(iter(neo4j_node.labels)),
+        'properties': neo4j_node._properties
+    }
+    return Node.parse_obj(data)
 
 
 class Relationship(BaseModel):
@@ -72,6 +83,75 @@ def create_relationship(
         session.run(cypher_query)
 
 
-class Relationship(BaseModel):
-    type: str
-    properties: Optional[Dict[str, Any]]
+def find_shortest_path(
+        table1: str,
+        table2: str
+) -> List[Node]:
+    start_node = Node(
+        type="Table",
+        properties={"name": table1}
+    )
+
+    end_node = Node(
+        type="Table",
+        properties={"name": table2}
+    )
+
+    if node_exists(start_node) and node_exists(end_node):
+        start_prop = _transform_properties(start_node.properties)
+        end_prop = _transform_properties(end_node.properties)
+        query = f"""
+        MATCH (start:{start_node.type} {{{start_prop}}}), (end:{end_node.type} {{{end_prop}}}),
+        p = shortestPath((start)-[:FOREIGN_KEY|REFERENCED_BY*]-(end))
+        RETURN p
+        """
+
+        with driver.session() as session:
+            result = session.run(query)
+            path = result.single()
+
+            if path:
+                nodes = path["p"].nodes
+                return [create_node_from_neo4j(node) for node in nodes]
+            else:
+                return None
+    else:
+        print("One of the nodes does not exist.")
+
+
+def get_table_from_node(table_name: str) -> Table:
+    node = Node(
+        type="Table",
+        properties={"name": table_name}
+    )
+
+    if node_exists(node):
+        properties_str = _transform_properties(node.properties)
+        query = f"""
+            MATCH (n:{node.type} {{{properties_str}}})-[:HAS_COLUMN]-(column)
+            RETURN column
+        """
+
+        with driver.session() as session:
+            result = session.run(query)
+            columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
+
+            columns = [Column(**col._properties) for col in columns_nodes]
+            return Table(name=table_name, columns=columns)
+    else:
+        print("The node does not exist.")
+
+
+nodes1 = find_shortest_path(
+    table1="users",
+    table2="shipmenttracking"
+)
+
+
+for node1 in nodes1:
+    print(node1)
+
+lol = get_table_from_node("shipmenttracking")
+
+print(lol)
+driver.close()
