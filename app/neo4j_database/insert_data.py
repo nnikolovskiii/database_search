@@ -90,5 +90,6 @@ def insert_columns():
                 )
             )
 
+
 # insert_tables_with_foreign_keys()
 # insert_columns()

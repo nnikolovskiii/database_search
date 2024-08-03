@@ -36,8 +36,8 @@ def upsert_record(
     )
 
 
-def search_embeddings(query: str, search_type: str, collection_name: str = "database_search", top_k: int = 3) \
-        -> list[ScoredPoint]:
+def search_embeddings(query: str, search_type: str = None, collection_name: str = "database_search", top_k: int = 3) -> List[Dict[str, Any]]:
+    filter_condition = None
     if search_type == "table_name":
         filter_condition = models.Filter(
             must=[
@@ -47,7 +47,6 @@ def search_embeddings(query: str, search_type: str, collection_name: str = "data
                 )
             ]
         )
-
     elif search_type == "column_name":
         filter_condition = models.Filter(
             must_not=[
@@ -73,15 +72,13 @@ def search_embeddings(query: str, search_type: str, collection_name: str = "data
             ]
         )
 
-    else:
-        raise ValueError("Invalid search type. Must be 'table', 'column', or 'value'.")
     vector = embedd_content(query)
 
     search_result = client.search(
         collection_name=collection_name,
         limit=top_k,
         query_vector=vector,
-        scroll_filter=filter_condition,
+        query_filter=filter_condition,
     )
 
     results = []
@@ -94,11 +91,11 @@ def search_embeddings(query: str, search_type: str, collection_name: str = "data
         }
         results.append(result)
 
-    return search_result
+    return results
 
 
-Results = search_embeddings("How many users have pruchased a bear bottle minimum 10 times?", "value")
+Query = "How many users have purchased a beer bottle minimum 10 times?"
+results = search_embeddings(Query, "value")
 
-for r in Results:
-    print(
-        f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}, Score: {r['score']}")
+for r in results:
+    print(f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}, Score: {r['score']}")
