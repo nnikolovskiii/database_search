@@ -58,4 +58,4 @@ def embedd_string_values():
 
 # embedd_table_names()
 # embedd_columns()
-embedd_string_values()
+# embedd_string_values()

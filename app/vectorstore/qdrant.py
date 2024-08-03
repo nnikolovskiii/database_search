@@ -35,13 +35,51 @@ def upsert_record(
     )
 
 
-def search_embeddings(query: str, collection_name: str = "database_search", top_k: int = 5) -> List[Dict[str, Any]]:
-    vector = embedd_content(query)
+def search_embeddings(query: str, search_type: str, collection_name: str = "database_search", top_k: int = 3) \
+        -> List[Dict[str, Any]]:
+    if search_type == "table_name":
+        filter_condition = models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="column_name",
+                    match=models.MatchValue(value="")
+                )
+            ]
+        )
 
+    elif search_type == "column_name":
+        filter_condition = models.Filter(
+            must_not=[
+                models.FieldCondition(
+                    key="column_name",
+                    match=models.MatchValue(value="")
+                )
+            ],
+            must=[
+                models.FieldCondition(
+                    key="value",
+                    match=models.MatchValue(value="")
+                )
+            ]
+        )
+    elif search_type == "value":
+        filter_condition = models.Filter(
+            must_not=[
+                models.FieldCondition(
+                    key="value",
+                    match=models.MatchValue(value="")
+                )
+            ]
+        )
+
+    else:
+        raise ValueError("Invalid search type. Must be 'table', 'column', or 'value'.")
+    vector = embedd_content(query)
     search_result = client.search(
         collection_name=collection_name,
-        query_vector=vector,
-        limit=top_k
+        limit=top_k,
+        vector=vector,
+        scroll_filter=filter_condition,
     )
 
     results = []
@@ -54,11 +92,10 @@ def search_embeddings(query: str, collection_name: str = "database_search", top_
         }
         results.append(result)
 
-    return results
+    return search_result
 
 
-Query = "krstine23"
-Results = search_embeddings(Query)
+Results = search_embeddings("How many users have pruchased a bear bottle minimum 10 times?", "value")
 
 for r in Results:
     print(
