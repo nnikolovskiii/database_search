@@ -1,6 +1,7 @@
 from typing import List, Dict, Any
 import uuid
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.models import ScoredPoint
 
 from app.openai.embedding import embedd_content
 
@@ -36,7 +37,7 @@ def upsert_record(
 
 
 def search_embeddings(query: str, search_type: str, collection_name: str = "database_search", top_k: int = 3) \
-        -> List[Dict[str, Any]]:
+        -> list[ScoredPoint]:
     if search_type == "table_name":
         filter_condition = models.Filter(
             must=[
@@ -75,10 +76,11 @@ def search_embeddings(query: str, search_type: str, collection_name: str = "data
     else:
         raise ValueError("Invalid search type. Must be 'table', 'column', or 'value'.")
     vector = embedd_content(query)
+
     search_result = client.search(
         collection_name=collection_name,
         limit=top_k,
-        vector=vector,
+        query_vector=vector,
         scroll_filter=filter_condition,
     )
 
