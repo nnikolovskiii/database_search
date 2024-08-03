@@ -212,4 +212,5 @@ def get_column_values(table_name: str, column_name: str) -> List[str]:
 
     return [value[0] for value in values if value[0] is not None]
 
+
 print(get_columns_by_table("shipmenttracking"))

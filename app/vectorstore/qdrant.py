@@ -1,6 +1,8 @@
+import json
 from typing import List, Dict, Any
 import uuid
 from qdrant_client import QdrantClient, models
+import requests
 
 from app.openai.embedding import embedd_content
 
@@ -35,23 +37,65 @@ def upsert_record(
     )
 
 
-def search_embeddings(query: str, collection_name: str = "database_search", top_k: int = 5) -> List[Dict[str, Any]]:
-    vector = embedd_content(query)
+def search_embeddings(query: str, search_type: str = None, collection_name: str = "database_search", top_k: int = 3) -> \
+        List[Dict[str, Any]]:
+    headers = {
+        "Content-Type": "application/json"
+    }
 
-    search_result = client.search(
-        collection_name=collection_name,
-        query_vector=vector,
-        limit=top_k
+    filter_condition = None
+    if search_type == "table_name":
+        filter_condition = {
+            "must": [
+                {"is_empty": {"key": "column_name"}}
+            ]
+        }
+    elif search_type == "column_name":
+        filter_condition = {
+            "must": [
+                {"is_empty": {"key": "value"}}
+            ]
+        }
+    elif search_type == "value":
+        filter_condition = {
+            "must_not": [
+                {"is_empty": {"key": "value"}}
+            ]
+        }
+
+    query_vector = embedd_content(query)
+
+    payload = {
+        "vector": query_vector,
+        "limit": top_k,
+        "with_payload": True,
+        "filter": filter_condition
+    }
+
+    response = requests.post(
+        f"http://localhost:6333/collections/{collection_name}/points/search",
+        headers=headers,
+        data=json.dumps(payload)
     )
 
+    response.raise_for_status()
+    search_result = response.json()
+
     results = []
-    for point in search_result:
+    for point in search_result["result"]:
         result = {
-            "table_name": point.payload.get("table_name"),
-            "column_name": point.payload.get("column_name"),
-            "value": point.payload.get("value"),
-            "score": point.score
+            "table_name": point['payload'].get("table_name"),
+            "column_name": point['payload'].get("column_name"),
+            "value": point['payload'].get("value"),
+            "score": point['score']
         }
         results.append(result)
 
     return results
+
+
+# prompt = "How many users have purchased a beer bottle minimum 10 times?"
+# search_results = search_embeddings(prompt, "column_name")
+#
+# for r in search_results:
+#     print(f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}")

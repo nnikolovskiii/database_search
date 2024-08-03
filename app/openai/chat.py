@@ -40,4 +40,4 @@ def chat_with_openai(
         response.raise_for_status()
 
 
-print(chat_with_openai("How are you?"))
+# print(chat_with_openai("How are you?"))
