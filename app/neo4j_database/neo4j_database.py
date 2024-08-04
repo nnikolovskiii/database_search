@@ -142,7 +142,16 @@ def get_table_from_node(table_name: str) -> Table:
         print("The node does not exist.")
 
 
-nodes1 = find_shortest_path(
+def get_tables_in_path(
+        table1: str,
+        table2: str
+):
+    nodes = find_shortest_path(table1, table2)
+    return [get_table_from_node(node.properties["name"]) for node in nodes]
+
+
+
+nodes1 = get_tables_in_path(
     table1="users",
     table2="shipmenttracking"
 )
@@ -151,7 +160,4 @@ nodes1 = find_shortest_path(
 for node1 in nodes1:
     print(node1)
 
-lol = get_table_from_node("shipmenttracking")
-
-print(lol)
 driver.close()
