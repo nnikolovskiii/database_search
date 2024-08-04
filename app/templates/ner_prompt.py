@@ -1,53 +1,55 @@
+import json
+from typing import Any, List
+
 from app.openai.chat import chat_with_openai
 
 
-def ner_prompt(
-    text: str
-):
-    return f"""Given the text bellow extract all relevant infomation that could be important for searching for columns, tables and string values in SQL realtional database. Extract every information that is useful. Include concepts, nouns, verbs that help search table names, column names and string values.
+def ner_prompt(text: str):
+    return f"""
+    You are an expert at extracting relevant information from text for searching in a SQL relational database.
+    Your task is to identify all key concepts, nouns, verbs, and other elements that can help in searching for 
+    table names, column names, and string values. Ensure to extract information that is directly useful for database
+    queries.
 
-Example:
-What top 3 products does nnikolovskii buy?
+    Example 1:
+    Input:
+    What are the top 3 products purchased by John Doe?
 
-Output:
-{{ "infomration": ["nnikolovskii","products"] }}
+    Output:
+    {{ "information": ["products", "purchased", "John Doe"] }}
 
+    Example 2:
+    Input:
+    List all employees who joined in 2020.
 
-Text:
-{text}
+    Output:
+    {{ "information": ["employees", "joined", "2020"] }}
 
-Return them in a list in json.
-"""
+    Example 3:
+    Input:
+    Find all orders placed in the last month.
 
-print(ner_prompt(text="How many users have pruchased a bear bottle minimum 10 times?"))
+    Output:
+    {{ "information": ["orders", "placed", "last month"] }}
 
+    Example 4:
+    Input:
+    Retrieve customer details for Jane Smith.
 
-def ner_chain(
-        query: str
-) -> List[str]:
-    prompt = ner_prompt(text=query)
-    output = chat_with_openai(message=prompt)
-    extract_json(output)
+    Output:
+    {{ "information": ["customer details", "Jane Smith"] }}
 
-    return Liust
+    Text:
+    {text}
 
-for elem in list:
-    type = ""
-    list_elem = search_qdrant(elem, top_k=3, filter="column") # table i column, i nema value
-    list_elem = search_qdrant(elem, top_k=3, filter="table") # table key i nema colona i nema value
-    list_elem = search_qdrant(elem, top_k=3, filter="string_value")# value
-
-    get_neighbouring_tables_neo4j()
-
-
-
-
-
+    Return the extracted information in a list in JSON format.
+    """
 
 
-def trimAndLoadJson(
-    input_string: str, metric: Optional[BaseMetric] = None
-) -> Any:
+# print(ner_prompt(text="How many users have pruchased a bear bottle minimum 10 times?"))
+
+
+def trim_and_load_json(input_string: str) -> Any:
     start = input_string.find("{")
     end = input_string.rfind("}") + 1
 
@@ -55,14 +57,24 @@ def trimAndLoadJson(
         input_string = input_string + "}"
         end = len(input_string)
 
-    jsonStr = input_string[start:end] if start != -1 and end != 0 else ""
+    json_str = input_string[start:end] if start != -1 and end != 0 else ""
 
     try:
-        return json.loads(jsonStr)
+        return json.loads(json_str)
     except json.JSONDecodeError:
-        error_str = "Evaluation LLM outputted an invalid JSON. Please use a better evaluation model."
-        if metric is not None:
-            metric.error = error_str
-        raise ValueError(error_str)
+        raise ValueError("The output is not a valid JSON.")
     except Exception as e:
         raise Exception(f"An unexpected error occurred: {str(e)}")
+
+
+def ner_chain(
+        query: str
+) -> List[str]:
+    prompt = ner_prompt(text=query)
+    output = chat_with_openai(message=prompt)
+    extracted_info = trim_and_load_json(output)
+
+    if not isinstance(extracted_info, dict) or "information" not in extracted_info:
+        raise ValueError("Invalid extracted information format.")
+
+    return extracted_info["information"]

@@ -1,10 +1,13 @@
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
 
 from neo4j import GraphDatabase
 from pydantic import BaseModel
 from neo4j.graph import Node as Neo4jNode
 
 from app.sql_database.database_connection import Table, Column
+
+from app.templates.ner_prompt import ner_chain
+from app.vectorstore.qdrant import search_embeddings
 
 uri = "bolt://localhost:7687"
 username = "neo4j"
@@ -161,3 +164,31 @@ for node1 in nodes1:
     print(node1)
 
 driver.close()
+
+
+def get_neighbours(node: Node) -> List[Dict[str, Any]]:
+    with driver.session() as session:
+        properties = _transform_properties(node.properties)
+        cypher_query = f"""
+        MATCH (n:{node.type} {{{properties}}})--(neighbour)
+        RETURN neighbour
+        """
+        result = session.run(cypher_query)
+        neighbours = [record["neighbour"]._properties for record in result]
+        return neighbours
+
+
+def main(query: str):
+    extracted_info = ner_chain(query)
+
+    for elem in extracted_info:
+        table_results = search_embeddings(query=elem, search_type="table_name")
+        column_results = search_embeddings(query=elem, search_type="column_name")
+        value_results = search_embeddings(query=elem, search_type="value")
+
+        for result in table_results + column_results + value_results:
+            print(get_neighbours(result))
+
+
+Query = "How many users have pruchased a bear bottle minimum 10 times?"
+main(Query)
