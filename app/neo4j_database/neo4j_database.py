@@ -4,9 +4,9 @@ from neo4j import GraphDatabase
 from pydantic import BaseModel
 from neo4j.graph import Node as Neo4jNode
 
+from app.chains.ner_chain import ner_chain
 from app.sql_database.database_connection import Table, Column
 
-from app.templates.ner_prompt import ner_chain
 from app.vectorstore.qdrant import search_embeddings
 
 uri = "bolt://localhost:7687"
@@ -139,7 +139,7 @@ def get_table_from_node(table_name: str) -> Table:
             result = session.run(query)
             columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
 
-            columns = [Column(**col._properties) for col in columns_nodes]
+            columns = [Column(**col.properties) for col in columns_nodes]
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
@@ -153,12 +153,10 @@ def get_tables_in_path(
     return [get_table_from_node(node.properties["name"]) for node in nodes]
 
 
-
 nodes1 = get_tables_in_path(
     table1="users",
     table2="shipmenttracking"
 )
-
 
 for node1 in nodes1:
     print(node1)

@@ -20,4 +20,4 @@ def postgresql_template(
     """
 
 
-print(postgresql_template(table_info="Sports, Orders, Categories", proper_nouns="Tennis, Volleyball"))
+# print(postgresql_template(table_info="Sports, Orders, Categories", proper_nouns="Tennis, Volleyball", query=""))

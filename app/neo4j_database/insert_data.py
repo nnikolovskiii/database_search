@@ -1,9 +1,4 @@
 from typing import Tuple
-
-from app.neo4j_database.neo4j_database import create_relationship, Node, Relationship
-from app.sql_database.database_connection import get_tables_with_foreign_keys
-from typing import List, Tuple
-from tqdm import tqdm
 from app.neo4j_database.neo4j_database import create_relationship, Node, Relationship, create_node
 from app.sql_database.database_connection import get_tables_with_foreign_keys, get_tables, get_columns_by_table
 from pydantic import BaseModel
