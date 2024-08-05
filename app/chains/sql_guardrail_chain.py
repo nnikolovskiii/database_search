@@ -1,13 +1,11 @@
-from typing import List
-
-from app.ner_prompt.ner_prompt import ner_prompt, trim_and_load_json
+from app.ner_prompt.ner_prompt import trim_and_load_json
 from app.openai.chat import chat_with_openai
 from app.templates.guardrails import sql_query_guardrail
 
 
-def ner_chain(
+def guardrail_chain(
         query: str
-) -> List[str]:
+) -> dict:
     prompt = sql_query_guardrail(text=query)
     output = chat_with_openai(message=prompt)
     extracted_info = trim_and_load_json(output)
@@ -15,7 +13,7 @@ def ner_chain(
     if not isinstance(extracted_info, dict) or "verdict" not in extracted_info:
         raise ValueError("Invalid extracted verdict format.")
 
-    return extracted_info["verdict"]
+    return extracted_info
 
 
-# print(ner_chain(""))
+# print(guardrail_chain(""))
