@@ -1,9 +1,12 @@
+from typing import List
+
 from fastapi import FastAPI, HTTPException
 
 from app.chains.ner_chain import ner_chain
 from app.chains.sql_guardrail_chain import guardrail_chain
-from app.neo4j_database.neo4j_database import get_neighbours, Node
+from app.neo4j_database.neo4j_database import get_neighbours, Node, get_tables_in_path
 from app.openai.chat import chat_with_openai
+from app.sql_database.database_connection import Table
 from app.templates.sql_prompt import postgresql_template
 from app.vectorstore.qdrant import search_embeddings
 
@@ -21,27 +24,28 @@ def get_sql_query(prompt: str):
 
 
 def create_query(query: str):
-    extracted_info = ner_chain(query)
+    entities = ner_chain(query)
     tables, columns, values = [], [], []
 
-    for elem in extracted_info:
-        table_results = search_embeddings(query=elem, search_type="table_name")
-        column_results = search_embeddings(query=elem, search_type="column_name")
-        value_results = search_embeddings(query=elem, search_type="value")
+    for elem in entities:
+        tables.extend(search_embeddings(query=elem, search_type="table_name"))
+        columns.extend(search_embeddings(query=elem, search_type="column_name"))
+        values.extend(search_embeddings(query=elem, search_type="value"))
 
-        for result in table_results:
-            tables.extend(get_neighbours(Node(type="Table", properties=result)))
-        for result in column_results:
-            columns.extend(get_neighbours(Node(type="Column", properties=result)))
-        for result in value_results:
-            values.extend(get_neighbours(Node(type="Value", properties=result)))
+    table_names: List[str] = [table["table_name"] for table in tables] + [col["table_name"] for col in columns]
+    values: List[str] = [value["value"] for value in values]
 
-    table_info = "\n".join([f"Table: {t['table_name']}, Columns: {t['columns']}" for t in tables])
-    proper_nouns = "\n".join([f"{v['value']}" for v in values])
+    tables: List[Table] = []
+
+    for table_from in table_names:
+        for table_to in table_names:
+            if table_from != table_to:
+                tables.extend(get_tables_in_path(table_from, table_to))
+
+    table_info = "\n".join(tables)
+    proper_nouns = ", ".join([f"{v['value']}" for v in values])
 
     sql_query = postgresql_template(table_info, proper_nouns, query)
     return chat_with_openai(sql_query)
 
-
-# Query = "How many users have pruchased a bear bottle minimum 10 times?"
-# main(Query)
+# "How many users have purchased a bear bottle minimum 10 times?"
