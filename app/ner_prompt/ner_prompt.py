@@ -1,7 +1,5 @@
 import json
-from typing import Any, List
-
-from app.openai.chat import chat_with_openai
+from typing import Any
 
 
 def ner_prompt(text: str):
@@ -20,24 +18,33 @@ def ner_prompt(text: str):
 
     Example 2:
     Input:
-    List all employees who joined in 2020.
+    Show the inventory levels of all warehouses with a capacity greater than 1000 units.
 
     Output:
-    {{ "information": ["employees", "joined", "2020"] }}
+    {{ "information": ["inventory levels", "warehouses", "capacity", "greater than 1000 units"] }}
 
     Example 3:
     Input:
-    Find all orders placed in the last month.
+    List all transactions involving customers who have a loyalty score above 80.
 
     Output:
-    {{ "information": ["orders", "placed", "last month"] }}
+    {{ "information": ["transactions", "customers", "loyalty score", "above 80"] }}
 
     Example 4:
     Input:
-    Retrieve customer details for Jane Smith.
+    Find all suppliers who provide more than 50 different products.
 
     Output:
-    {{ "information": ["customer details", "Jane Smith"] }}
+    {{ "information": ["suppliers", "provide", "more than 50 different products"] }}
+
+    Example 5:
+    Input:
+    I want you to give me all the items that are bought buy the user John Doe. 
+    Than from them find the highest priced item. 
+    I want you return all the number of items that have that specific price.
+
+    Output:
+    {{ "information": ["items", "bought", "user", "John Doe", "price"] }}
 
     Text:
     {text}
@@ -65,16 +72,3 @@ def trim_and_load_json(input_string: str) -> Any:
         raise ValueError("The output is not a valid JSON.")
     except Exception as e:
         raise Exception(f"An unexpected error occurred: {str(e)}")
-
-
-def ner_chain(
-        query: str
-) -> List[str]:
-    prompt = ner_prompt(text=query)
-    output = chat_with_openai(message=prompt)
-    extracted_info = trim_and_load_json(output)
-
-    if not isinstance(extracted_info, dict) or "information" not in extracted_info:
-        raise ValueError("Invalid extracted information format.")
-
-    return extracted_info["information"]

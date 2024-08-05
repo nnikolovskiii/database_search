@@ -6,9 +6,6 @@ from neo4j.graph import Node as Neo4jNode
 
 from app.sql_database.database_connection import Table, Column
 
-from app.templates.ner_prompt import ner_chain
-from app.vectorstore.qdrant import search_embeddings
-
 uri = "bolt://localhost:7687"
 username = "neo4j"
 password = "Test09875"
@@ -139,7 +136,7 @@ def get_table_from_node(table_name: str) -> Table:
             result = session.run(query)
             columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
 
-            columns = [Column(**col._properties) for col in columns_nodes]
+            columns = [Column(**col.properties) for col in columns_nodes]
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
@@ -153,12 +150,10 @@ def get_tables_in_path(
     return [get_table_from_node(node.properties["name"]) for node in nodes]
 
 
-
 nodes1 = get_tables_in_path(
     table1="users",
     table2="shipmenttracking"
 )
-
 
 for node1 in nodes1:
     print(node1)
@@ -176,19 +171,3 @@ def get_neighbours(node: Node) -> List[Dict[str, Any]]:
         result = session.run(cypher_query)
         neighbours = [record["neighbour"]._properties for record in result]
         return neighbours
-
-
-def main(query: str):
-    extracted_info = ner_chain(query)
-
-    for elem in extracted_info:
-        table_results = search_embeddings(query=elem, search_type="table_name")
-        column_results = search_embeddings(query=elem, search_type="column_name")
-        value_results = search_embeddings(query=elem, search_type="value")
-
-        for result in table_results + column_results + value_results:
-            print(get_neighbours(result))
-
-
-Query = "How many users have pruchased a bear bottle minimum 10 times?"
-main(Query)
