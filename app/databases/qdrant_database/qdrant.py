@@ -108,5 +108,3 @@ def search_embeddings(
 #
 # for r in search_results:
 #     print(f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}")
-
-create_collection("database_search")
