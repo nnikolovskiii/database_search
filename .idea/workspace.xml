@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="modified api to return actual sql" />
+    <list default="true" id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="modified gitignore" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,38 +61,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Python.api.executor": "Run",
-    "Python.chat.executor": "Run",
-    "Python.database_connection.executor": "Run",
-    "Python.insert_data.executor": "Run",
-    "Python.main.executor": "Debug",
-    "Python.neo4j_database.executor": "Run",
-    "Python.ner_chain.executor": "Run",
-    "Python.ner_prompt.executor": "Run",
-    "Python.populate_data.executor": "Run",
-    "Python.qdrant.executor": "Debug",
-    "Python.sql_guardrail_chain.executor": "Run",
-    "Python.sql_prompt.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;Python.api.executor&quot;: &quot;Run&quot;,
+    &quot;Python.chat.executor&quot;: &quot;Run&quot;,
+    &quot;Python.database_connection.executor&quot;: &quot;Run&quot;,
+    &quot;Python.insert_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.neo4j_database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ner_chain.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ner_prompt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.populate_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.qdrant.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.sql_guardrail_chain.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql_prompt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\school\database_search\app\neo_prompt" />
@@ -132,7 +132,8 @@
       <workItem from="1722848368834" duration="6282000" />
       <workItem from="1722874503632" duration="2488000" />
       <workItem from="1722902392563" duration="1189000" />
-      <workItem from="1722938610030" duration="1044000" />
+      <workItem from="1722938610030" duration="1222000" />
+      <workItem from="1722939850088" duration="105000" />
     </task>
     <task id="LOCAL-00001" summary="added embeddings for tables, columns and string values">
       <option name="closed" value="true" />
