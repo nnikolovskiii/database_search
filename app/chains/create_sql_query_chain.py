@@ -12,9 +12,9 @@ def create_sql_query(query: str):
     tables, columns, values = [], [], []
 
     for elem in entities:
-        tables.extend(search_embeddings(query=elem, search_type="table_name"))
-        columns.extend(search_embeddings(query=elem, search_type="column_name"))
-        values.extend(search_embeddings(query=elem, search_type="value"))
+        tables.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.6))
+        columns.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.8))
+        values.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8))
 
     table_names: List[str] = [table["table_name"] for table in tables] + [col["table_name"] for col in columns]
     values: List[str] = [value["value"] for value in values]
