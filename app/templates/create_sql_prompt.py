@@ -15,6 +15,8 @@ def postgresql_template(
     against this list first:
     {proper_nouns}
     
-    Query:
+    Question:
     {query}
+    
+    Given an input question, create a syntactically correct Postgres query to run.
     """
