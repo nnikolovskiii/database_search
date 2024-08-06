@@ -1,43 +1,35 @@
-def sql_query_guardrail(text: str):
-    return f"""
-    You are an expert at extracting relevant information from text for searching in a SQL relational database.
-    Your task is to identify all key concepts, nouns, verbs, and other elements that can help in searching for 
-    table names, column names, and string values. Ensure to extract information that is directly useful for database
-    queries.
+def sql_query_guardrail(question: str):
+    return f"""Given a question determine if the question could be transformed into a sql SELECT query (Data Query Language).
 
-    Example 1:
-    Input:
-    Firstly, give me all cars that have the brand Mercedes. From them extract the top 10 models that have the highest revenue from consumers. Sum up all of the revenue and return it to me.
+Example 1:
 
-    Output:
-   {{"information": ["cars", "brand", "Mercedes", "models", "revenue", "consumers"]}}
+Input: How are you?
 
+Output: {{
+  "reason": "The question 'How are you?' is a conversational and open-ended question typically asked in social interactions to inquire about someone's well-being. It does not relate to data retrieval, manipulation, or any specific data-related operation that SQL is designed to handle.",
+  "verdict": "no"
+}}
 
-    Example 2:
-    Input:
-    Show the inventory levels of all warehouses with a capacity greater than 1000 units.
+Example 2:
 
-    Output:
-    {{ "information": ["inventory levels", "warehouses", "capacity", "units"] }}
+Input: How many bear bottles are sold in 2023?
 
-    Example 3:
-    Input:
-    List all transactions involving customers who have a loyalty score above 80.
+Output: {{
+  "reason": "The question asks for the number of beer bottles sold in 2023. This can be addressed by querying a database where sales data is stored, typically in a structured format such as SQL. Databases usually have tables that store sales information with fields like product type, quantity, and date, making it feasible to construct a SQL query to get the required information.",
+  "verdict": "yes"
+}}
 
-    Output:
-    {{ "information": ["transactions", "customers", "loyalty score"] }}
+Example 3:
 
-    Example 4:
-    Input:
-    I want you to give me all the items that are bought buy the user John Doe. 
-    Than from them find the highest priced item. 
-    I want you return all the number of items that have that specific price.
+Input: Create a table for orders.
 
-    Output:
-    {{ "information": ["items", "bought", "user", "John Doe", "price"] }}
+Output: {{
+  "reason": "The question 'Create a table for orders' is asking for the creation of a database table, which involves defining the structure and schema of the table, such as columns and data types. This operation is typically performed using the Data Definition Language (DDL) subset of SQL, specifically using a CREATE TABLE statement. It does not involve querying data or retrieving information, which is the purpose of a SELECT statement in SQL.",
+  "verdict": "no"
+}}
 
-    Text:
-    Firstly, give me all cars that have the brand Mercedes. From them extract the top 10 models that have the highest revenue from consumers. Sum up all of the revenue and return it to me.
+Question:
+{question}
 
-    Return the extracted information in a list in JSON format.
+Return a json with key reason and verdict. First provide your reason why you think the question can or cannot be transformed into SELECT sql. And in the end provide a  verdict yes if it could be transformed into SELECT sql query, and no if it can not.
     """

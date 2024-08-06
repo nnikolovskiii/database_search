@@ -1,6 +1,5 @@
 from app.openai.embedding import embedd_content
-from app.sql_database.database_connection import *
-from app.vectorstore.qdrant import upsert_record
+from app.databases.qdrant_database.qdrant import upsert_record
 from tqdm import tqdm
 
 

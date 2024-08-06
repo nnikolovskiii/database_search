@@ -4,7 +4,7 @@ from neo4j import GraphDatabase
 from pydantic import BaseModel
 from neo4j.graph import Node as Neo4jNode
 
-from app.sql_database.database_connection import Table, Column
+from app.databases.postgres_database.database_connection import Table, Column
 
 uri = "bolt://localhost:7687"
 username = "neo4j"

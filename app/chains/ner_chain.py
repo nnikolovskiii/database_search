@@ -1,6 +1,6 @@
 from typing import List
 
-from app.ner_prompt.ner_prompt import ner_prompt, trim_and_load_json
+from app.templates.ner_prompt import ner_prompt, trim_and_load_json
 from app.openai.chat import chat_with_openai
 
 
@@ -15,7 +15,3 @@ def ner_chain(
         raise ValueError("Invalid extracted information format.")
 
     return extracted_info["information"]
-
-
-print(ner_chain("I want you to give me all the users that bought coffee and milk. "
-                "Then from them count the users who live in Macedonia."))

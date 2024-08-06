@@ -1,4 +1,13 @@
-def create_query(query: str):
+from typing import List
+from app.chains.ner_chain import ner_chain
+from app.databases.neo4j_database.neo4j_database import get_tables_in_path
+from app.openai.chat import chat_with_openai
+from app.databases.postgres_database.database_connection import Table
+from app.templates.sql_prompt import postgresql_template
+from app.databases.qdrant_database.qdrant import search_embeddings
+
+
+def create_sql_query(query: str):
     entities = ner_chain(query)
     tables, columns, values = [], [], []
 

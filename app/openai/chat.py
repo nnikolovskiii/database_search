@@ -39,5 +39,3 @@ def chat_with_openai(
     else:
         response.raise_for_status()
 
-
-# print(chat_with_openai("How are you?"))

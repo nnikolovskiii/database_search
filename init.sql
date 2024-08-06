@@ -1,8 +1,8 @@
 --
--- PostgreSQL sql_database dump
+-- PostgreSQL postgres_database dump
 --
 
--- Dumped from sql_database version 16.3 (Debian 16.3-1.pgdg120+1)
+-- Dumped from postgres_database version 16.3 (Debian 16.3-1.pgdg120+1)
 -- Dumped by pg_dump version 16.3 (Ubuntu 16.3-1.pgdg22.04+1)
 
 -- Connect to the default database (usually 'postgres') to create the new database

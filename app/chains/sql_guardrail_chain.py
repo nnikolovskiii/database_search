@@ -1,4 +1,4 @@
-from app.ner_prompt.ner_prompt import trim_and_load_json
+from app.templates.ner_prompt import trim_and_load_json
 from app.openai.chat import chat_with_openai
 from app.templates.guardrails import sql_query_guardrail
 
@@ -6,7 +6,7 @@ from app.templates.guardrails import sql_query_guardrail
 def guardrail_chain(
         query: str
 ) -> dict:
-    prompt = sql_query_guardrail(text=query)
+    prompt = sql_query_guardrail(question=query)
     output = chat_with_openai(message=prompt)
     extracted_info = trim_and_load_json(output)
 
@@ -15,5 +15,3 @@ def guardrail_chain(
 
     return extracted_info
 
-
-# print(guardrail_chain(""))
