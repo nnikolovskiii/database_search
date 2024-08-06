@@ -13,7 +13,7 @@ def create_sql_query(query: str):
     tables, columns, values = [], [], []
 
     for elem in entities:
-        tables.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.6))
+        tables.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.3))
         columns.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.8))
         values.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8))
 
@@ -27,13 +27,13 @@ def create_sql_query(query: str):
     if validation_output.verdict == "no":
         additional_tables_dict: List[str] = []
         for table in validation_output.missing_tables:
-            additional_tables_dict.extend(search_embeddings(query=table, search_type="table_name", score_threshold=0.6))
+            additional_tables_dict.extend(search_embeddings(query=table, search_type="table_name", score_threshold=0.3))
         additional_tables: List[str] = [table["table_name"] for table in additional_tables_dict]
         additional_tables = _get_tables_in_paths(additional_tables)
         tables.update(additional_tables)
 
     table_info = "\n".join([str(table) for table in tables])
-    proper_nouns = ", ".join([f"{v['value']}" for v in values])
+    proper_nouns = ", ".join(values)
 
     sql_query = postgresql_template(table_info, proper_nouns, query)
     return chat_with_openai(sql_query)
