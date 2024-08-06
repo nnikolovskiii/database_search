@@ -134,6 +134,7 @@
       <workItem from="1722902392563" duration="1189000" />
       <workItem from="1722938610030" duration="1222000" />
       <workItem from="1722939850088" duration="105000" />
+      <workItem from="1722939964953" duration="381000" />
     </task>
     <task id="LOCAL-00001" summary="added embeddings for tables, columns and string values">
       <option name="closed" value="true" />
@@ -223,7 +224,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722860525782</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="modified gitignore">
+      <option name="closed" value="true" />
+      <created>1722940019202</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1722940019202</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -252,7 +261,8 @@
     <MESSAGE value="modified ner examples and added guardrail chain" />
     <MESSAGE value="added initial api" />
     <MESSAGE value="modified api to return actual sql" />
-    <option name="LAST_COMMIT_MESSAGE" value="modified api to return actual sql" />
+    <MESSAGE value="modified gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified gitignore" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/database_search$chat.coverage" NAME="chat Coverage Results" MODIFIED="1722518920487" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/openai" />
