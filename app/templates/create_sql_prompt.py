@@ -19,4 +19,5 @@ def postgresql_template(
     {query}
     
     Given an input question, create a syntactically correct Postgres query to run.
+    Important: Create the sql ONLY from the tables above. If it is not possible just say it.
     """
