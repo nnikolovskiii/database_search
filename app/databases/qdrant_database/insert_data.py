@@ -1,3 +1,5 @@
+from app.databases.postgres_database.database_connection import get_tables, get_columns_by_table, \
+    get_char_varchar_text_columns, get_column_values, get_active_table_names
 from app.openai.embedding import embedd_content
 from app.databases.qdrant_database.qdrant import upsert_record
 from tqdm import tqdm
@@ -53,8 +55,3 @@ def embedd_string_values():
                 vector = embedd_content(value)
 
                 upsert_record(vector, metadata, "database_search")
-
-
-# embedd_table_names()
-# embedd_columns()
-# embedd_string_values()

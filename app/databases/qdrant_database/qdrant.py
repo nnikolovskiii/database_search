@@ -100,10 +100,3 @@ def search_embeddings(
         results.append(result)
 
     return results
-
-
-# prompt = "customers"
-# search_results = search_embeddings(prompt, "column_name")
-#
-# for r in search_results:
-#     print(f"Table: {r['table_name']}, Column: {r['column_name']}, Value: {r['value']}")

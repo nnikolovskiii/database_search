@@ -21,6 +21,7 @@ faker = "^26.1.0"
 tqdm = "^4.66.5"
 neo4j = "^5.23.1"
 gradio = "^4.40.0"
+streamlit = "^1.37.1"
 
 
 [build-system]

@@ -27,7 +27,7 @@ def create_sql_query(query: str):
                 tables.extend(get_tables_in_path(table_from, table_to))
 
     table_info = "\n".join([str(table) for table in tables])
-    proper_nouns = ", ".join([f"{v['value']}" for v in values])
+    proper_nouns = ", ".join(values)
 
     sql_query = postgresql_template(table_info, proper_nouns, query)
     return chat_with_openai(sql_query)

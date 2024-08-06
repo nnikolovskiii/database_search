@@ -1,10 +1,8 @@
-from typing import List
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 
 from app.chains.create_sql_query_chain import create_sql_query
 from app.chains.sql_guardrail_chain import guardrail_chain
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 
 router = APIRouter()
 
