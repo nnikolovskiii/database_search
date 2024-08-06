@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Optional, Set, Tuple
+from typing import List, Dict, Any, Optional, Tuple
 import psycopg2
 from pydantic import BaseModel
 from app.models.enums.postgres_data_types import PostgresDataType

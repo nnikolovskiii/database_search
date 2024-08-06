@@ -1,6 +1,10 @@
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import uuid
+
+from dataclasses import dataclass
+
+from pydantic import BaseModel
 from qdrant_client import QdrantClient, models
 import requests
 
@@ -37,13 +41,21 @@ def upsert_record(
     )
 
 
+@dataclass(frozen=True)
+class SearchOutput(BaseModel):
+    table_name: str
+    score: float
+    column_name: Optional[str] = None
+    value: Optional[str] = None
+
+
 def search_embeddings(
         query: str,
         search_type: str = None,
         collection_name: str = "database_search",
         score_threshold: float = 0.6,
         top_k: int = 5
-) -> List[Dict[str, Any]]:
+) -> list[SearchOutput]:
     headers = {
         "Content-Type": "application/json"
     }
@@ -92,12 +104,12 @@ def search_embeddings(
 
     results = []
     for point in search_result["result"]:
-        result = {
-            "table_name": point['payload'].get("table_name"),
-            "column_name": point['payload'].get("column_name"),
-            "value": point['payload'].get("value"),
-            "score": point['score']
-        }
+        result = SearchOutput(
+            table_name=point['payload'].get("table_name"),
+            column_name=point['payload'].get("column_name"),
+            value=point['payload'].get("value"),
+            score=point['score']
+        )
         results.append(result)
 
     return results
