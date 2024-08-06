@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="modified api to return actual sql" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="1-insert-column-table-names-and-string-data-in-qdrant" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="3-add-ner-chain" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Dpavlovski&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nnikolovskiii/database_search.git&quot;,
+    &quot;accountId&quot;: &quot;2f81175e-d1cc-43b6-b891-df784ef19ee4&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2jv2qq9NzDHb9JylGR3ey3upJ3s" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Python.api.executor": "Run",
+    "Python.chat.executor": "Run",
+    "Python.database_connection.executor": "Run",
+    "Python.insert_data.executor": "Run",
+    "Python.main.executor": "Debug",
+    "Python.neo4j_database.executor": "Run",
+    "Python.ner_chain.executor": "Run",
+    "Python.ner_prompt.executor": "Run",
+    "Python.populate_data.executor": "Run",
+    "Python.qdrant.executor": "Debug",
+    "Python.sql_guardrail_chain.executor": "Run",
+    "Python.sql_prompt.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\school\database_search\app\neo_prompt" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="" />
+      <created>1722253424101</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722253424101</updated>
+      <workItem from="1722253426229" duration="8363000" />
+      <workItem from="1722282845033" duration="5959000" />
+      <workItem from="1722290164078" duration="1263000" />
+      <workItem from="1722347737802" duration="12296000" />
+      <workItem from="1722424141668" duration="6932000" />
+      <workItem from="1722516432780" duration="11208000" />
+      <workItem from="1722535031804" duration="1637000" />
+      <workItem from="1722540986388" duration="292000" />
+      <workItem from="1722541318212" duration="76000" />
+      <workItem from="1722597271302" duration="18844000" />
+      <workItem from="1722682851348" duration="15701000" />
+      <workItem from="1722707893720" duration="2455000" />
+      <workItem from="1722768472986" duration="2700000" />
+      <workItem from="1722795114654" duration="4163000" />
+      <workItem from="1722815559785" duration="4040000" />
+      <workItem from="1722848368834" duration="6282000" />
+      <workItem from="1722874503632" duration="2488000" />
+      <workItem from="1722902392563" duration="1189000" />
+      <workItem from="1722938610030" duration="1044000" />
+    </task>
+    <task id="LOCAL-00001" summary="added embeddings for tables, columns and string values">
+      <option name="closed" value="true" />
+      <created>1722431529314</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722431529315</updated>
+    </task>
+    <task id="LOCAL-00002" summary="test embeddings">
+      <option name="closed" value="true" />
+      <created>1722442961394</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1722442961394</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed searching">
+      <option name="closed" value="true" />
+      <created>1722541380981</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722541380981</updated>
+    </task>
+    <task id="LOCAL-00004" summary="merged master">
+      <option name="closed" value="true" />
+      <created>1722602607352</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1722602607352</updated>
+    </task>
+    <task id="LOCAL-00005" summary="partially implemented NER">
+      <option name="closed" value="true" />
+      <created>1722697833753</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1722697833753</updated>
+    </task>
+    <task id="LOCAL-00006" summary="merged fro master">
+      <option name="closed" value="true" />
+      <created>1722698698794</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1722698698794</updated>
+    </task>
+    <task id="LOCAL-00007" summary="merged fro master">
+      <option name="closed" value="true" />
+      <created>1722701419375</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1722701419375</updated>
+    </task>
+    <task id="LOCAL-00008" summary="added filtering">
+      <option name="closed" value="true" />
+      <created>1722710335730</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1722710335730</updated>
+    </task>
+    <task id="LOCAL-00009" summary="modified ner examples and added guardrail chain">
+      <option name="closed" value="true" />
+      <created>1722798719895</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1722798719895</updated>
+    </task>
+    <task id="LOCAL-00010" summary="added initial api">
+      <option name="closed" value="true" />
+      <created>1722819008823</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1722819008823</updated>
+    </task>
+    <task id="LOCAL-00011" summary="modified api to return actual sql">
+      <option name="closed" value="true" />
+      <created>1722860525782</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1722860525782</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added embeddings for tables, columns and string values" />
+    <MESSAGE value="test embeddings" />
+    <MESSAGE value="fixed searching" />
+    <MESSAGE value="merged master" />
+    <MESSAGE value="partially implemented NER" />
+    <MESSAGE value="merged fro mamster" />
+    <MESSAGE value="merged fro master" />
+    <MESSAGE value="added filtering" />
+    <MESSAGE value="modified ner examples and added guardrail chain" />
+    <MESSAGE value="added initial api" />
+    <MESSAGE value="modified api to return actual sql" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified api to return actual sql" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/database_search$chat.coverage" NAME="chat Coverage Results" MODIFIED="1722518920487" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/openai" />
+    <SUITE FILE_PATH="coverage/database_search$sql_prompt.coverage" NAME="sql_prompt Coverage Results" MODIFIED="1722517320576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/templates" />
+    <SUITE FILE_PATH="coverage/database_search$sql_guardrail_chain.coverage" NAME="sql_guardrail_chain Coverage Results" MODIFIED="1722818162409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/chains" />
+    <SUITE FILE_PATH="coverage/database_search$ner_prompt.coverage" NAME="ner_prompt Coverage Results" MODIFIED="1722695955378" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/templates" />
+    <SUITE FILE_PATH="coverage/database_search$insert_data.coverage" NAME="insert_data Coverage Results" MODIFIED="1722876706058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/neo4j_database" />
+    <SUITE FILE_PATH="coverage/database_search$qdrant.coverage" NAME="qdrant Coverage Results" MODIFIED="1722710146757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/vectorstore" />
+    <SUITE FILE_PATH="coverage/database_search$api.coverage" NAME="api Coverage Results" MODIFIED="1722817521045" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api" />
+    <SUITE FILE_PATH="coverage/database_search$populate_data.coverage" NAME="populate_data Coverage Results" MODIFIED="1722285510142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
+    <SUITE FILE_PATH="coverage/database_search$main.coverage" NAME="main Coverage Results" MODIFIED="1722685441149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Lib/site-packages/pydantic" />
+    <SUITE FILE_PATH="coverage/database_search$ner_chain.coverage" NAME="ner_chain Coverage Results" MODIFIED="1722797146048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/chains" />
+    <SUITE FILE_PATH="coverage/database_search$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1722535586928" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/sql_database" />
+    <SUITE FILE_PATH="coverage/database_search$neo4j_database.coverage" NAME="neo4j_database Coverage Results" MODIFIED="1722859841093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/neo4j_database" />
+  </component>
+</project>
