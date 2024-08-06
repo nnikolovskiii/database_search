@@ -41,6 +41,7 @@ def search_embeddings(
         query: str,
         search_type: str = None,
         collection_name: str = "database_search",
+        score_threshold: float = 0.6,
         top_k: int = 5
 ) -> List[Dict[str, Any]]:
     headers = {
@@ -77,7 +78,7 @@ def search_embeddings(
         "limit": top_k,
         "with_payload": True,
         "filter": filter_condition,
-        "score_threshold": 0.6
+        "score_threshold": score_threshold
     }
 
     response = requests.post(

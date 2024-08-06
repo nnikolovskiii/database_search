@@ -1,6 +1,6 @@
-from app.templates.ner_prompt import trim_and_load_json
 from app.openai.chat import chat_with_openai
 from app.templates.guardrails import sql_query_guardrail
+from app.utils.json_extraction import trim_and_load_json
 
 
 def guardrail_chain(

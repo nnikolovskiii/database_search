@@ -136,7 +136,7 @@ def get_table_from_node(table_name: str) -> Table:
             result = session.run(query)
             columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
 
-            columns = [Column(**col._properties) for col in columns_nodes]
+            columns = (Column(**col._properties) for col in columns_nodes)
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")

@@ -1,8 +1,9 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set, Tuple
 import psycopg2
 from pydantic import BaseModel
 from app.models.enums.postgres_data_types import PostgresDataType
 from psycopg2.extras import RealDictCursor
+from dataclasses import dataclass
 
 db_config = {
     'dbname': 'sample-database',
@@ -13,12 +14,13 @@ db_config = {
 }
 
 
+@dataclass(frozen=True)
 class Column(BaseModel):
     name: str
     data_type: str
     is_nullable: bool
-    is_primary_key: bool = False
     foreign_key_table: Optional[str]
+    is_primary_key: bool = False
 
     def __str__(self):
         constraints = []
@@ -33,9 +35,18 @@ class Column(BaseModel):
         return f"{self.name} {self.data_type} {constraints_str}".strip()
 
 
+@dataclass(frozen=True)
 class Table(BaseModel):
     name: str
-    columns: List[Column]
+    columns: Tuple[Column]
+
+    def __eq__(self, other):
+        if isinstance(other, Table):
+            return self.name == other.name
+        return False
+
+    def __hash__(self):
+        return hash(self.name)
 
     def __str__(self):
         columns_str = "\n  ".join(str(column) for column in self.columns)
