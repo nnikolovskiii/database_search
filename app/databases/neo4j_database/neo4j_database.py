@@ -136,7 +136,7 @@ def get_table_from_node(table_name: str) -> Table:
             result = session.run(query)
             columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
 
-            columns = [Column(**col.properties) for col in columns_nodes]
+            columns = [Column(**col._properties) for col in columns_nodes]
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
@@ -148,17 +148,6 @@ def get_tables_in_path(
 ):
     nodes = find_shortest_path(table1, table2)
     return [get_table_from_node(node.properties["name"]) for node in nodes]
-
-
-nodes1 = get_tables_in_path(
-    table1="users",
-    table2="shipmenttracking"
-)
-
-for node1 in nodes1:
-    print(node1)
-
-driver.close()
 
 
 def get_neighbours(node: Node) -> List[Dict[str, Any]]:

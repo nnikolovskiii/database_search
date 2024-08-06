@@ -53,9 +53,6 @@ def ner_prompt(text: str):
     """
 
 
-# print(ner_prompt(text="How many users have pruchased a bear bottle minimum 10 times?"))
-
-
 def trim_and_load_json(input_string: str) -> Any:
     start = input_string.find("{")
     end = input_string.rfind("}") + 1

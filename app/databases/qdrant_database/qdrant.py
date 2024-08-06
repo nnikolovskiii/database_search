@@ -37,8 +37,12 @@ def upsert_record(
     )
 
 
-def search_embeddings(query: str, search_type: str = None, collection_name: str = "database_search", top_k: int = 3) -> \
-        List[Dict[str, Any]]:
+def search_embeddings(
+        query: str,
+        search_type: str = None,
+        collection_name: str = "database_search",
+        top_k: int = 5
+) -> List[Dict[str, Any]]:
     headers = {
         "Content-Type": "application/json"
     }
@@ -53,7 +57,10 @@ def search_embeddings(query: str, search_type: str = None, collection_name: str 
     elif search_type == "column_name":
         filter_condition = {
             "must": [
-                {"is_empty": {"key": "value"}}
+                {"is_empty": {"key": "value"}},
+            ],
+            "must_not": [
+                {"is_empty": {"key": "column_name"}}
             ]
         }
     elif search_type == "value":
@@ -69,7 +76,8 @@ def search_embeddings(query: str, search_type: str = None, collection_name: str 
         "vector": query_vector,
         "limit": top_k,
         "with_payload": True,
-        "filter": filter_condition
+        "filter": filter_condition,
+        "score_threshold": 0.6
     }
 
     response = requests.post(
@@ -94,7 +102,7 @@ def search_embeddings(query: str, search_type: str = None, collection_name: str 
     return results
 
 
-# prompt = "How many users have purchased a beer bottle minimum 10 times?"
+# prompt = "customers"
 # search_results = search_embeddings(prompt, "column_name")
 #
 # for r in search_results:
