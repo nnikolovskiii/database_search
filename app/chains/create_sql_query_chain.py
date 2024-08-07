@@ -19,11 +19,6 @@ def create_sql_query(query: str):
         columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3))
         values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3))
 
-    # table_names: Set[str] = {table.table_name for table in tables}
-    # table_names1 = {col.table_name for col in columns}
-    # table_names.update(table_names1)
-    #values: List[str] = [value.value for value in values]
-
     tables = _get_tables_in_paths({table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
     table_info = "\n".join([str(table) for table in tables])
 
