@@ -55,7 +55,3 @@ def embedd_string_values():
                 vector = embedd_content(value)
 
                 upsert_record(vector, metadata, "database_search")
-
-
-embedd_table_names()
-embedd_columns()

@@ -14,4 +14,3 @@ def guardrail_chain(
         raise ValueError("Invalid extracted verdict format.")
 
     return extracted_info
-
