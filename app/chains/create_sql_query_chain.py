@@ -10,43 +10,47 @@ from app.databases.qdrant_database.qdrant import search_embeddings, SearchOutput
 
 def create_sql_query(query: str):
     entities = ner_chain(query)
-    tables: Set[SearchOutput] = set()
-    columns: Set[SearchOutput] = set()
-    values: Set[SearchOutput] = set()
+    tables_objs: List[SearchOutput] = []
+    columns_objs: List[SearchOutput] = []
+    values_objs: List[SearchOutput] = []
 
     for elem in entities:
-        tables.update(search_embeddings(query=elem, search_type="table_name", score_threshold=0.6))
-        columns.update(search_embeddings(query=elem, search_type="column_name", score_threshold=0.6))
-        values.update(search_embeddings(query=elem, search_type="value", score_threshold=0.8))
+        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3))
+        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3))
+        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3))
 
-    table_names: Set[str] = {table.table_name for table in tables}
-    table_names1 = {col.column_name for col in columns}
-    table_names.update(table_names1)
-    values: List[str] = [value.value for value in values]
+    # table_names: Set[str] = {table.table_name for table in tables}
+    # table_names1 = {col.table_name for col in columns}
+    # table_names.update(table_names1)
+    #values: List[str] = [value.value for value in values]
 
-    all_tables = _get_tables_in_paths(table_names)
-    table_info = "\n".join([str(table) for table in all_tables])
+    tables = _get_tables_in_paths({table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
+    table_info = "\n".join([str(table) for table in tables])
 
     validation_output = validate_info_chain(table_info=table_info, question=query)
-    if validation_output.verdict == "no":
-        additional_tables_dict: Set[SearchOutput] = set()
-        for table in validation_output.missing_tables:
-            additional_tables_dict.update(
-                search_embeddings(query=table, search_type="table_name", score_threshold=0.6))
-        additional_table_names: Set[str] = {table.table_name for table in additional_tables_dict}
-        additional_tables = _get_tables_in_paths(additional_table_names)
-        all_tables.update(additional_tables)
-        tables.update(additional_tables_dict)
 
-    all_tables = sort_search_outputs_by_score(tables)
-    table_info = "\n".join([str(table) for table in all_tables])
-    proper_nouns = ", ".join(values)
+    if validation_output.verdict == "no":
+        missing_tables_objs: Set[SearchOutput] = set()
+
+        for table in validation_output.missing_tables:
+            missing_tables_objs.update(
+                search_embeddings(
+                    query=table,
+                    search_type="table_name",
+                    score_threshold=0.2)
+            )
+
+        missing_tables = _get_tables_in_paths({table.table_name for table in missing_tables_objs})
+        tables.update(missing_tables)
+
+    table_info = "\n".join([table.__str__() for table in tables])
+    proper_nouns = ", ".join([value.value for value in values_objs])
 
     sql_query = postgresql_template(table_info, proper_nouns, query)
     return chat_with_openai(sql_query)
 
 
-def sort_search_outputs_by_score(search_outputs: Set[SearchOutput]) -> List[SearchOutput]:
+def _sort_search_outputs_by_score(search_outputs: Set[SearchOutput]) -> List[SearchOutput]:
     return sorted(search_outputs, key=lambda x: x.score, reverse=True)[:8]
 
 
@@ -57,7 +61,6 @@ def _get_tables_in_paths(
     for table_from in table_names:
         for table_to in table_names:
             if table_from != table_to:
-                for table in get_tables_in_path(table_from, table_to):
-                    tables.add(table)
+                tables.update(get_tables_in_path(table_from, table_to))
 
     return tables

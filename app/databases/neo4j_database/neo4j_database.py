@@ -114,9 +114,9 @@ def find_shortest_path(
                 nodes = path["p"].nodes
                 return [create_node_from_neo4j(node) for node in nodes]
             else:
-                return None
+                return []
     else:
-        print("One of the nodes does not exist.")
+        return []
 
 
 def get_table_from_node(table_name: str) -> Table:
@@ -136,7 +136,7 @@ def get_table_from_node(table_name: str) -> Table:
             result = session.run(query)
             columns_nodes: List[Neo4jNode] = [record['column'] for record in result]
 
-            columns = (Column(**col._properties) for col in columns_nodes)
+            columns = tuple(Column(**col._properties) for col in columns_nodes)
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
@@ -145,7 +145,7 @@ def get_table_from_node(table_name: str) -> Table:
 def get_tables_in_path(
         table1: str,
         table2: str
-):
+) -> List[Table]:
     nodes = find_shortest_path(table1, table2)
     return [get_table_from_node(node.properties["name"]) for node in nodes]
 
