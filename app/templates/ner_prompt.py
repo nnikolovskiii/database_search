@@ -47,4 +47,3 @@ def ner_prompt(text: str):
 
     Return the extracted information in a list in JSON format.
     """
-

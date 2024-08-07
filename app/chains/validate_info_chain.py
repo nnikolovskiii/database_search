@@ -14,4 +14,3 @@ def validate_info_chain(
     validation_output = ValidationOutput(**json_data)
 
     return validation_output
-

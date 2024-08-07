@@ -84,7 +84,3 @@ def insert_columns():
                     properties=None
                 )
             )
-
-
-# insert_tables_with_foreign_keys()
-# insert_columns()
