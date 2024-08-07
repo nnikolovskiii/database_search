@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="updated dependencies">
+    <list default="true" id="fee91da3-8c82-4e77-8edb-01ece7291df9" name="Changes" comment="filtering tables in createsqlchain by score">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/chains/create_sql_query_chain.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/chains/create_sql_query_chain.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/databases/postgres_database/database_connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/databases/postgres_database/database_connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/databases/qdrant_database/qdrant.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/databases/qdrant_database/qdrant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/outputs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/create_sql_prompt.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/create_sql_prompt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/frontend/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/frontend/frontend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +74,7 @@
     &quot;Python.database_connection.executor&quot;: &quot;Run&quot;,
     &quot;Python.frontend.executor&quot;: &quot;Run&quot;,
     &quot;Python.insert_data.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.neo4j_database.executor&quot;: &quot;Run&quot;,
     &quot;Python.ner_chain.executor&quot;: &quot;Run&quot;,
     &quot;Python.ner_prompt.executor&quot;: &quot;Run&quot;,
@@ -146,6 +143,9 @@
       <workItem from="1722939964953" duration="7761000" />
       <workItem from="1722953433389" duration="4704000" />
       <workItem from="1722969933504" duration="361000" />
+      <workItem from="1722970344807" duration="184000" />
+      <workItem from="1723019783404" duration="9560000" />
+      <workItem from="1723043282255" duration="694000" />
     </task>
     <task id="LOCAL-00001" summary="added embeddings for tables, columns and string values">
       <option name="closed" value="true" />
@@ -251,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722940969791</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="filtering tables in createsqlchain by score">
+      <option name="closed" value="true" />
+      <created>1722970515640</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1722970515640</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -285,7 +293,8 @@
     <MESSAGE value="modified api to return actual sql" />
     <MESSAGE value="modified gitignore" />
     <MESSAGE value="updated dependencies" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated dependencies" />
+    <MESSAGE value="filtering tables in createsqlchain by score" />
+    <option name="LAST_COMMIT_MESSAGE" value="filtering tables in createsqlchain by score" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -318,13 +327,13 @@
     <SUITE FILE_PATH="coverage/database_search$sql_prompt.coverage" NAME="sql_prompt Coverage Results" MODIFIED="1722517320576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/templates" />
     <SUITE FILE_PATH="coverage/database_search$sql_guardrail_chain.coverage" NAME="sql_guardrail_chain Coverage Results" MODIFIED="1722818162409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/chains" />
     <SUITE FILE_PATH="coverage/database_search$ner_prompt.coverage" NAME="ner_prompt Coverage Results" MODIFIED="1722695955378" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/templates" />
-    <SUITE FILE_PATH="coverage/database_search$frontend.coverage" NAME="frontend Coverage Results" MODIFIED="1722944884849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/frontend" />
+    <SUITE FILE_PATH="coverage/database_search$frontend.coverage" NAME="frontend Coverage Results" MODIFIED="1723041451815" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/frontend" />
     <SUITE FILE_PATH="coverage/database_search$insert_data.coverage" NAME="insert_data Coverage Results" MODIFIED="1722876706058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/neo4j_database" />
     <SUITE FILE_PATH="coverage/database_search$qdrant.coverage" NAME="qdrant Coverage Results" MODIFIED="1722710146757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/vectorstore" />
     <SUITE FILE_PATH="coverage/database_search$api.coverage" NAME="api Coverage Results" MODIFIED="1722817521045" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api" />
     <SUITE FILE_PATH="coverage/database_search$create_sql_query_chain.coverage" NAME="create_sql_query_chain Coverage Results" MODIFIED="1722964348762" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/chains" />
     <SUITE FILE_PATH="coverage/database_search$populate_data.coverage" NAME="populate_data Coverage Results" MODIFIED="1722285510142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
-    <SUITE FILE_PATH="coverage/database_search$main.coverage" NAME="main Coverage Results" MODIFIED="1722970280794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/database_search$main.coverage" NAME="main Coverage Results" MODIFIED="1723043974308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/database_search$ner_chain.coverage" NAME="ner_chain Coverage Results" MODIFIED="1722797146048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/chains" />
     <SUITE FILE_PATH="coverage/database_search$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1722535586928" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/sql_database" />
     <SUITE FILE_PATH="coverage/database_search$neo4j_database.coverage" NAME="neo4j_database Coverage Results" MODIFIED="1722859841093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/neo4j_database" />
