@@ -21,4 +21,6 @@ def postgresql_template(
     Given an input question, create a syntactically correct Postgres query to run.
     Pay attention to use only the column names you can see in the tables above. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
     Important: Create the sql ONLY from the tables above. If it is not possible just say it.
+    
+    Return a JSON with keys "reason" and "query". First provide your reason why you think it is the correct query. Than return the query.
     """

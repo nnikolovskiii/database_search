@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient, models
 import requests
 
+from app.models.outputs import SearchOutput
 from app.openai.embedding import embedd_content
 
 client = QdrantClient(url="http://localhost:6333")
@@ -39,14 +40,6 @@ def upsert_record(
             ),
         ],
     )
-
-
-@dataclass(frozen=True)
-class SearchOutput(BaseModel):
-    table_name: str
-    score: float
-    column_name: Optional[str] = None
-    value: Optional[str] = None
 
 
 def search_embeddings(

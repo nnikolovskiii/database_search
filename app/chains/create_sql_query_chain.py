@@ -2,10 +2,12 @@ from typing import List, Set
 from app.chains.ner_chain import ner_chain
 from app.chains.validate_info_chain import validate_info_chain
 from app.databases.neo4j_database.neo4j_database import get_tables_in_path
+from app.models.outputs import SqlGenerationOutput
 from app.openai.chat import chat_with_openai
-from app.databases.postgres_database.database_connection import Table
+from app.databases.postgres_database.database_connection import Table, run_query
 from app.templates.create_sql_prompt import postgresql_template
 from app.databases.qdrant_database.qdrant import search_embeddings, SearchOutput
+from app.utils.json_extraction import trim_and_load_json
 
 
 def create_sql_query(query: str):
@@ -41,12 +43,11 @@ def create_sql_query(query: str):
     table_info = "\n".join([table.__str__() for table in tables])
     proper_nouns = ", ".join([value.value for value in values_objs])
 
-    sql_query = postgresql_template(table_info, proper_nouns, query)
-    return chat_with_openai(sql_query)
-
-
-def _sort_search_outputs_by_score(search_outputs: Set[SearchOutput]) -> List[SearchOutput]:
-    return sorted(search_outputs, key=lambda x: x.score, reverse=True)[:8]
+    sql_prompt = postgresql_template(table_info, proper_nouns, query)
+    chat_output = chat_with_openai(sql_prompt)
+    json_data = trim_and_load_json(input_string=chat_output)
+    sql_output = SqlGenerationOutput(**json_data)
+    return run_query(sql_output)
 
 
 def _get_tables_in_paths(

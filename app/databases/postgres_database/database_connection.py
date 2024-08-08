@@ -5,6 +5,9 @@ from app.models.enums.postgres_data_types import PostgresDataType
 from psycopg2.extras import RealDictCursor
 from dataclasses import dataclass
 
+from app.models.outputs import SqlGenerationOutput
+from app.templates.chat_output_template import chat_output_template
+
 db_config = {
     'dbname': 'sample-database',
     'user': 'postgres',
@@ -222,3 +225,31 @@ def get_column_values(table_name: str, column_name: str) -> List[str]:
     conn.close()
 
     return [value[0] for value in values if value[0] is not None]
+
+
+def run_query(sql_output: SqlGenerationOutput) -> str:
+    conn = None
+    cur = None
+    try:
+        conn = psycopg2.connect(**db_config)
+        cur = conn.cursor()
+
+        cur.execute(sql_output.query)
+
+        results = cur.fetchall()
+
+        conn.commit()
+
+        return chat_output_template(
+            query=sql_output.query,
+            output=results
+        )
+    except Exception as e:
+        print(sql_output.reason)
+        if conn:
+            conn.rollback()
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()

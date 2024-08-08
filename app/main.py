@@ -8,9 +8,11 @@ app = FastAPI()
 
 app.include_router(chat.router, prefix="/chat", tags=["items"])
 
+
 def run_fastapi():
     print("Starting FastAPI...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 def run_streamlit():
     try:
@@ -18,6 +20,7 @@ def run_streamlit():
         subprocess.run(["streamlit", "run", "frontend/frontend.py", "--server.port", "8080"], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Streamlit failed with error: {e}")
+
 
 if __name__ == "__main__":
     fastapi_thread = threading.Thread(target=run_fastapi)
