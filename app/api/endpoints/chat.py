@@ -7,11 +7,11 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.post("/")
-def get_sql_query(prompt: str):
+@router.post("/{collection_name}")
+def get_sql_query(collection_name: str, prompt: str):
     result = guardrail_chain(prompt)
     if result['verdict'] == "no":
         raise HTTPException(status_code=400, detail=result['reason'])
-    response = create_sql_query(prompt)
+    response = create_sql_query(collection_name, prompt)
 
     return {"query": response}

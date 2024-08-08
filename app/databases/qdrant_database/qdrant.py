@@ -1,10 +1,7 @@
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import uuid
 
-from dataclasses import dataclass
-
-from pydantic import BaseModel
 from qdrant_client import QdrantClient, models
 import requests
 
@@ -44,8 +41,8 @@ def upsert_record(
 
 def search_embeddings(
         query: str,
+        collection_name: str,
         search_type: str = None,
-        collection_name: str = "database_search",
         score_threshold: float = 0.6,
         top_k: int = 5
 ) -> list[SearchOutput]:

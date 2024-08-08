@@ -10,16 +10,16 @@ from app.databases.qdrant_database.qdrant import search_embeddings, SearchOutput
 from app.utils.json_extraction import trim_and_load_json
 
 
-def create_sql_query(query: str):
+def create_sql_query(collection_name: str, query: str):
     entities = ner_chain(query)
     tables_objs: List[SearchOutput] = []
     columns_objs: List[SearchOutput] = []
     values_objs: List[SearchOutput] = []
 
     for elem in entities:
-        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3))
-        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3))
-        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3))
+        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3, collection_name=collection_name))
+        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3, collection_name=collection_name))
+        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3, collection_name=collection_name))
 
     tables = _get_tables_in_paths({table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
     table_info = "\n".join([str(table) for table in tables])

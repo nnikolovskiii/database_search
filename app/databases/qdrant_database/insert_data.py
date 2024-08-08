@@ -5,7 +5,7 @@ from app.databases.qdrant_database.qdrant import upsert_record
 from tqdm import tqdm
 
 
-def embedd_table_names():
+def embedd_table_names(collection_name: str):
     tables = get_tables()
     for table in tqdm(tables):
         table_name = table
@@ -14,10 +14,10 @@ def embedd_table_names():
         }
 
         vector = embedd_content(table_name)
-        upsert_record(vector, metadata, "database_search")
+        upsert_record(vector, metadata, collection_name)
 
 
-def embedd_columns():
+def embedd_columns(collection_name: str):
     tables = get_tables()
     for table in tqdm(tables):
         table_name = table
@@ -33,10 +33,10 @@ def embedd_columns():
 
             vector = embedd_content(column_name)
 
-            upsert_record(vector, metadata, "database_search")
+            upsert_record(vector, metadata, collection_name)
 
 
-def embedd_string_values():
+def embedd_string_values(collection_name: str):
     tables = get_active_table_names()
     for table in tqdm(tables):
         table_name = table
@@ -54,4 +54,4 @@ def embedd_string_values():
                 }
                 vector = embedd_content(value)
 
-                upsert_record(vector, metadata, "database_search")
+                upsert_record(vector, metadata, collection_name)

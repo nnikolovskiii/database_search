@@ -67,7 +67,7 @@ if prompt:
 
     try:
         time.sleep(2)
-        response = create_sql_query(prompt)
+        response = create_sql_query("database_search", prompt)
     except Exception as e:
         response = f"An error occurred: {e}"
 
