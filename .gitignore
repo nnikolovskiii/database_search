@@ -2,3 +2,5 @@ __pycache__/
 **/__pycache__/
 .env
 .idea/
+app/chains/__pycache__/
+app/templates/__pycache__/
