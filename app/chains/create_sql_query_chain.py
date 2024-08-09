@@ -17,11 +17,15 @@ def create_sql_query(collection_name: str, query: str):
     values_objs: List[SearchOutput] = []
 
     for elem in entities:
-        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3, collection_name=collection_name))
-        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3, collection_name=collection_name))
-        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3, collection_name=collection_name))
+        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3,
+                                             collection_name=collection_name))
+        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3,
+                                              collection_name=collection_name))
+        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3,
+                                             collection_name=collection_name))
 
-    tables = _get_tables_in_paths({table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
+    tables = _get_tables_in_paths(
+        {table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
     table_info = "\n".join([str(table) for table in tables])
 
     validation_output = validate_info_chain(table_info=table_info, question=query)
@@ -34,7 +38,8 @@ def create_sql_query(collection_name: str, query: str):
                 search_embeddings(
                     query=table,
                     search_type="table_name",
-                    score_threshold=0.2)
+                    score_threshold=0.2,
+                    collection_name=collection_name)
             )
 
         missing_tables = _get_tables_in_paths({table.table_name for table in missing_tables_objs})
@@ -47,7 +52,7 @@ def create_sql_query(collection_name: str, query: str):
     chat_output = chat_with_openai(sql_prompt)
     json_data = trim_and_load_json(input_string=chat_output)
     sql_output = SqlGenerationOutput(**json_data)
-    return run_query(sql_output)
+    return run_query(collection_name, sql_output)
 
 
 def _get_tables_in_paths(

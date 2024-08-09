@@ -11,13 +11,15 @@ from app.openai.embedding import embedd_content
 client = QdrantClient(url="http://localhost:6333")
 
 
-def create_collection(
-        collection_name: str
-):
+def create_collection(collection_name: str):
     client.create_collection(
         collection_name=collection_name,
         vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
     )
+
+
+def get_collection(collection_name: str):
+    return client.get_collection(collection_name)
 
 
 def upsert_record(

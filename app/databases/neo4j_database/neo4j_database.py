@@ -119,7 +119,7 @@ def find_shortest_path(
         return []
 
 
-def get_table_from_node(table_name: str) -> Table:
+def get_table_from_node(table_name: str, ) -> Table:
     node = Node(
         type="Table",
         properties={"name": table_name}
@@ -148,15 +148,3 @@ def get_tables_in_path(
 ) -> List[Table]:
     nodes = find_shortest_path(table1, table2)
     return [get_table_from_node(node.properties["name"]) for node in nodes]
-
-
-def get_neighbours(node: Node) -> List[Dict[str, Any]]:
-    with driver.session() as session:
-        properties = _transform_properties(node.properties)
-        cypher_query = f"""
-        MATCH (n:{node.type} {{{properties}}})--(neighbour)
-        RETURN neighbour
-        """
-        result = session.run(cypher_query)
-        neighbours = [record["neighbour"]._properties for record in result]
-        return neighbours
