@@ -1,7 +1,7 @@
 from typing import Tuple
 from app.databases.neo4j_database.neo4j_database import create_relationship, Node, Relationship, create_node
 from app.databases.postgres_database.database_connection import get_tables_with_foreign_keys, get_tables, \
-    get_columns_by_table, DatabaseConnection
+    get_columns_by_table, Database
 from pydantic import BaseModel
 
 
@@ -18,7 +18,7 @@ class ForeignKey(BaseModel):
         )
 
 
-def insert_tables_with_foreign_keys(database: DatabaseConnection):
+def insert_tables_with_foreign_keys(database: Database):
     tables = get_tables_with_foreign_keys(database)
     for table_name, foreign_keys in tables.items():
         fks = [ForeignKey(foreign_key) for foreign_key in foreign_keys]
@@ -63,7 +63,7 @@ def insert_tables_with_foreign_keys(database: DatabaseConnection):
             )
 
 
-def insert_columns(database: DatabaseConnection):
+def insert_columns(database: Database):
     tables = get_tables(database)
     for table_name in tables:
         columns = get_columns_by_table(database, table_name)

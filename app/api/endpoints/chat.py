@@ -1,10 +1,8 @@
 from fastapi import HTTPException
 
+from app.api.endpoints.api_router import router
 from app.chains.create_sql_query_chain import create_sql_query
 from app.chains.sql_guardrail_chain import guardrail_chain
-from fastapi import APIRouter
-
-router = APIRouter()
 
 
 @router.post("/{collection_name}")
