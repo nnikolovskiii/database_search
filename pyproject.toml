@@ -2,7 +2,7 @@
 name = "database-search"
 version = "0.1.0"
 description = "Searching database wiht LLMs"
-authors = ["nnikolovskiii <nikolovski.nikola42@gmail.com>"]
+authors = ["dpavlovski <dimitar.pavlovski12@gmail.com>"]
 readme = "README.md"
 packages = [{include = "app"}]
 

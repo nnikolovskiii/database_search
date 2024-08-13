@@ -3,14 +3,14 @@ from app.databases.postgres_database.database_connection import (
     get_columns_by_table,
     get_char_varchar_text_columns,
     get_column_values,
-    DatabaseConnection
+    Database
 )
 from app.openai.embedding import embedd_content
 from app.databases.qdrant_database.qdrant import upsert_record, create_collection
 from tqdm import tqdm
 
 
-def embedd_table_names(database: DatabaseConnection):
+def embedd_table_names(database: Database):
     tables = get_tables(database)
     collection_name = database.dbname
     for table_name in tqdm(tables, desc="Embedding Table Names"):
@@ -19,7 +19,7 @@ def embedd_table_names(database: DatabaseConnection):
         upsert_record(vector, metadata, collection_name)
 
 
-def embedd_columns(database: DatabaseConnection):
+def embedd_columns(database: Database):
     tables = get_tables(database)
     collection_name = database.dbname
     for table_name in tqdm(tables, desc="Embedding Columns"):
@@ -33,7 +33,7 @@ def embedd_columns(database: DatabaseConnection):
             upsert_record(vector, metadata, collection_name)
 
 
-def embedd_string_values(database: DatabaseConnection):
+def embedd_string_values(database: Database):
     tables = get_tables(database)
     collection_name = database.dbname
     for table_name in tqdm(tables, desc="Embedding String Values by Table"):
@@ -50,7 +50,7 @@ def embedd_string_values(database: DatabaseConnection):
                 upsert_record(vector, metadata, collection_name)
 
 
-def embedd_database(database: DatabaseConnection, include_values: bool):
+def embedd_database(database: Database, include_values: bool):
     create_collection(database.dbname)
     embedd_table_names(database)
     embedd_columns(database)

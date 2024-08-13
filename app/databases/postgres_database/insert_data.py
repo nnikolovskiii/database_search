@@ -7,7 +7,7 @@ from faker import Faker
 fake = Faker()
 
 db_config = {
-    'dbname': 'sample-database',
+    'dbname': 'database_search',
     'user': 'postgres',
     'password': 'postgres',
     'host': 'localhost',
@@ -17,9 +17,7 @@ db_config = {
 conn = psycopg2.connect(**db_config)
 cursor = conn.cursor()
 
-cursor.executemany(
-    "ALTER DATABASE sample-database RENAME TO database_search;"
-)
+
 
 # def random_date(start, end):
 #     return fake.date_between_dates(date_start=start, date_end=end)

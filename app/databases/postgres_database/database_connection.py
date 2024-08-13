@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Dict, Any, Optional, Tuple
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -9,29 +10,48 @@ from app.models.enums.postgres_data_types import PostgresDataType
 from app.models.outputs import SqlGenerationOutput
 from app.templates.chat_output_template import chat_output_template
 
+metadata_db_connection_info = {
+    'dbname': 'database_search_db',
+    'user': 'postgres',
+    'password': 'postgres',
+    'host': 'localhost',
+    'port': '5433'
+}
+
 
 @dataclass(frozen=True)
-class DatabaseConnection(BaseModel):
+class Database(BaseModel):
     dbname: str
     user: str
     password: str
     host: str
     port: str
     table_schema: str
+    date_created: datetime
 
 
-DATABASE_CONNECTIONS = {}
+def get_database_info_by_name(dbname: str) -> Optional[Database]:
+    query = """
+    SELECT * FROM public.database WHERE dbname = %s;
+    """
 
-database_initial = DatabaseConnection(
-    dbname="sample-database",
-    user="postgres",
-    password="postgres",
-    host="localhost",
-    port="9871",
-    table_schema="public"
-)
+    with psycopg2.connect(**metadata_db_connection_info) as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(query, (dbname,))
+            result = cur.fetchone()
 
-DATABASE_CONNECTIONS[database_initial] = database_initial
+            if result:
+                return Database(
+                    dbname=result['dbname'],
+                    user=result['user'],
+                    password=result['password'],
+                    host=result['host'],
+                    port=result['port'],
+                    table_schema=result['schema'],
+                    date_created=result['date_created']
+                )
+            else:
+                return None
 
 
 @dataclass(frozen=True)
@@ -65,7 +85,7 @@ class Table(BaseModel):
 
 
 @contextmanager
-def get_db_connection(database: DatabaseConnection):
+def get_db_connection(database: Database):
     conn = psycopg2.connect(
         dbname=database.dbname,
         user=database.user,
@@ -79,12 +99,49 @@ def get_db_connection(database: DatabaseConnection):
         conn.close()
 
 
+def register_database(database: Database):
+    try:
+        with get_db_connection(database) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                       INSERT INTO public.database (host, port, "user", password, "name", "schema", date_created)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s)
+                   """, (
+                    database.host,
+                    database.port,
+                    database.user,
+                    database.password,
+                    database.name,
+                    database.table_schema,
+                    datetime.now()
+                ))
+                conn.commit()
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+        conn.rollback()
+
+
+def get_all_registered_databases():
+    try:
+        with psycopg2.connect(**metadata_db_connection_info) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT dbname FROM "database"
+                """)
+                dbnames = [row[0] for row in cur.fetchall()]
+                return dbnames
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+        conn.rollback()
+        return []
+
+
 def fetch_all(cursor, query: str, params: Tuple = ()) -> List[Dict[str, Any]]:
     cursor.execute(query, params)
     return cursor.fetchall()
 
 
-def get_tables_with_foreign_keys(database: DatabaseConnection) -> Dict[str, Any]:
+def get_tables_with_foreign_keys(database: Database) -> Dict[str, Any]:
     with get_db_connection(database) as conn:
         with conn.cursor() as cur:
             tables = fetch_all(cur, """
@@ -107,7 +164,7 @@ def get_tables_with_foreign_keys(database: DatabaseConnection) -> Dict[str, Any]
             return all_foreign_keys
 
 
-def get_tables(database: DatabaseConnection) -> List[str]:
+def get_tables(database: Database) -> List[str]:
     with get_db_connection(database) as conn:
         with conn.cursor() as cur:
             tables = fetch_all(cur, """
@@ -122,7 +179,7 @@ def get_active_table_names():
                  ])
 
 
-def get_columns_by_table(database: DatabaseConnection, table_name: str) -> List[Column]:
+def get_columns_by_table(database: Database, table_name: str) -> List[Column]:
     with get_db_connection(database) as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             columns = fetch_all(cur, """
@@ -157,7 +214,7 @@ def get_columns_by_table(database: DatabaseConnection, table_name: str) -> List[
             ]
 
 
-def get_char_varchar_text_columns(database: DatabaseConnection, table_name: str) -> List[str]:
+def get_char_varchar_text_columns(database: Database, table_name: str) -> List[str]:
     with get_db_connection(database) as conn:
         with conn.cursor() as cur:
             columns = fetch_all(cur, """
@@ -167,7 +224,7 @@ def get_char_varchar_text_columns(database: DatabaseConnection, table_name: str)
             return [column['column_name'] for column in columns]
 
 
-def get_column_values(database: DatabaseConnection, table_name: str, column_name: str) -> List[str]:
+def get_column_values(database: Database, table_name: str, column_name: str) -> List[str]:
     with get_db_connection(database) as conn:
         with conn.cursor() as cur:
             values = fetch_all(cur, f'SELECT "{column_name}" FROM "{table_name}";')
@@ -175,8 +232,7 @@ def get_column_values(database: DatabaseConnection, table_name: str, column_name
 
 
 def run_query(dbname: str, sql_output: SqlGenerationOutput) -> str:
-    database = DATABASE_CONNECTIONS.get(dbname)
-
+    database = get_database_info_by_name(dbname)
     if not database:
         raise ValueError(f"Database connection for '{dbname}' not found.")
 

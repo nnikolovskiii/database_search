@@ -1,9 +1,23 @@
 import streamlit as st
 import time
 from app.chains.create_sql_query_chain import create_sql_query
+from app.databases.postgres_database.database_connection import get_all_registered_databases
 
 st.set_page_config(page_title="Ask SQL generator", page_icon="random", layout="centered")
-st.header("Ask SQL generator :loudspeaker:")
+
+col1, col2 = st.columns([3, 2])
+
+with col1:
+    st.header("Ask SQL generator :loudspeaker:")
+
+with col2:
+    def fetch_database_names():
+        return get_all_registered_databases()
+
+
+    databases = fetch_database_names()
+    selected_database = st.selectbox("Select DB", databases)
+
 st.markdown("<hr style='margin-top: 0'>", unsafe_allow_html=True)
 
 bubble_css = """
@@ -67,7 +81,7 @@ if prompt:
 
     try:
         time.sleep(2)
-        response = create_sql_query("database_search", prompt)
+        response = create_sql_query(selected_database, prompt)
     except Exception as e:
         response = f"An error occurred: {e}"
 

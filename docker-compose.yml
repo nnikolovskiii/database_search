@@ -1,13 +1,23 @@
 version: '3.8'
 
 services:
+  database_search_db:
+    image: postgres:latest
+    container_name: database_search_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: database_search_db
+    ports:
+      - "5433:5432"
+
   postgres:
     image: postgres:latest
     container_name: my_postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sample-postgres_database
+      POSTGRES_DB: database_search
     ports:
       - "9871:5432"
     volumes:

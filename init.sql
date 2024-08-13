@@ -6,32 +6,32 @@
 -- Dumped by pg_dump version 16.3 (Ubuntu 16.3-1.pgdg22.04+1)
 
 -- Connect to the default database (usually 'postgres') to create the new database
-\connect postgres;
-
--- Create the new database named 'sample-database'
-CREATE DATABASE "sample-database";
-
--- Connect to the newly created database
-\connect "sample-database";
-
--- Set various configuration parameters
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
--- Set the comment on the public schema
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
+-- \connect postgres;
+--
+-- -- Create the new database named 'database_search'
+-- CREATE DATABASE "database_search";
+--
+-- -- Connect to the newly created database
+-- \connect "database_search";
+--
+-- -- Set various configuration parameters
+-- SET statement_timeout = 0;
+-- SET lock_timeout = 0;
+-- SET idle_in_transaction_session_timeout = 0;
+-- SET client_encoding = 'UTF8';
+-- SET standard_conforming_strings = on;
+-- SELECT pg_catalog.set_config('search_path', '', false);
+-- SET check_function_bodies = false;
+-- SET xmloption = content;
+-- SET client_min_messages = warning;
+-- SET row_security = off;
+--
+-- -- Set the comment on the public schema
+-- COMMENT ON SCHEMA public IS 'standard public schema';
+--
+-- SET default_tablespace = '';
+--
+-- SET default_table_access_method = heap;
 
 -- Create the 'abandonedcartitems' table in the 'public' schema
 CREATE TABLE public.abandonedcartitems (
