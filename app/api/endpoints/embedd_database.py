@@ -1,7 +1,10 @@
-from app.api.endpoints.api_router import router
 from app.databases.neo4j_database.insert_data import insert_tables_with_foreign_keys, insert_columns
 from app.databases.postgres_database.database_connection import Database, register_database
 from app.databases.qdrant_database.insert_data import embedd_database
+from fastapi import APIRouter
+
+router = APIRouter()
+
 
 
 @router.post("/add")
