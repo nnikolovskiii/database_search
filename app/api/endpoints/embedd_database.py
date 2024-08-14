@@ -6,14 +6,13 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-
 @router.post("/add")
 def add_database(database: Database, include_values: bool = False):
     try:
-        register_database(database)
+        # register_database(database)
         # embedd_database(database, include_values)
-        # insert_tables_with_foreign_keys(database)
-        # insert_columns(database)
+        insert_tables_with_foreign_keys(database)
+        insert_columns(database)
         return {"status": "success"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

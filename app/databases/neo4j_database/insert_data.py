@@ -24,6 +24,9 @@ def insert_tables_with_foreign_keys(database: Database):
         fks = [ForeignKey(foreign_key) for foreign_key in foreign_keys]
 
         for fk in fks:
+            fk_dump = fk.model_dump()
+            fk_dump["collection_name"] = database.dbname
+
             create_relationship(
                 node1=Node(
                     type="Table",
@@ -35,7 +38,7 @@ def insert_tables_with_foreign_keys(database: Database):
                 ),
                 relationship=Relationship(
                     type="FOREIGN_KEY",
-                    properties=fk.model_dump()
+                    properties=fk_dump
                 )
             )
 
@@ -50,7 +53,7 @@ def insert_tables_with_foreign_keys(database: Database):
                 ),
                 relationship=Relationship(
                     type="REFERENCED_BY",
-                    properties=fk.model_dump()
+                    properties=fk_dump
                 )
             )
 
@@ -69,6 +72,9 @@ def insert_columns(database: Database):
         columns = get_columns_by_table(database, table_name)
 
         for column in columns:
+            column_dump = column.model_dump()
+            column_dump["collection_name"] = database.dbname
+
             create_relationship(
                 node1=Node(
                     type="Table",
@@ -76,7 +82,7 @@ def insert_columns(database: Database):
                 ),
                 node2=Node(
                     type="Column",
-                    properties=column.model_dump()
+                    properties=column_dump
                 ),
                 relationship=Relationship(
                     type="HAS_COLUMN",

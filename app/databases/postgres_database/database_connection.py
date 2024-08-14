@@ -10,14 +10,6 @@ from app.models.enums.postgres_data_types import PostgresDataType
 from app.models.outputs import SqlGenerationOutput
 from app.templates.chat_output_template import chat_output_template
 
-metadata_db_connection_info = {
-    'dbname': 'database_search_db',
-    'user': 'postgres',
-    'password': 'postgres',
-    'host': 'localhost',
-    'port': '5433'
-}
-
 
 @dataclass(frozen=True)
 class Database(BaseModel):
@@ -25,9 +17,20 @@ class Database(BaseModel):
     user: str
     password: str
     host: str
-    port: str
-    table_schema: str
-    date_created: datetime
+    port: int
+    table_schema: Optional[str] = None
+    date_created: Optional[datetime] = None
+
+
+metadata_db_connection_info = Database(
+    dbname='database_search_db',
+    user='postgres',
+    password='postgres',
+    host='localhost',
+    port=5433,
+    table_schema=None,
+    date_created=None,
+)
 
 
 def get_database_info_by_name(dbname: str) -> Optional[Database]:
@@ -35,7 +38,7 @@ def get_database_info_by_name(dbname: str) -> Optional[Database]:
     SELECT * FROM public.database WHERE dbname = %s;
     """
 
-    with psycopg2.connect(**metadata_db_connection_info) as conn:
+    with psycopg2.connect(metadata_db_connection_info) as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(query, (dbname,))
             result = cur.fetchone()
@@ -47,7 +50,7 @@ def get_database_info_by_name(dbname: str) -> Optional[Database]:
                     password=result['password'],
                     host=result['host'],
                     port=result['port'],
-                    table_schema=result['schema'],
+                    table_schema=result['table_schema'],
                     date_created=result['date_created']
                 )
             else:
@@ -101,17 +104,17 @@ def get_db_connection(database: Database):
 
 def register_database(database: Database):
     try:
-        with get_db_connection(database) as conn:
+        with get_db_connection(metadata_db_connection_info) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                       INSERT INTO public.database (host, port, "user", password, "name", "schema", date_created)
+                       INSERT INTO public.database (host, port, "user", password, dbname, "schema", date_created)
                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                    """, (
                     database.host,
                     database.port,
                     database.user,
                     database.password,
-                    database.name,
+                    database.dbname,
                     database.table_schema,
                     datetime.now()
                 ))
@@ -123,7 +126,7 @@ def register_database(database: Database):
 
 def get_all_registered_databases():
     try:
-        with psycopg2.connect(**metadata_db_connection_info) as conn:
+        with get_db_connection(metadata_db_connection_info) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT dbname FROM "database"
