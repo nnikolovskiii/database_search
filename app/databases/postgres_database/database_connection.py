@@ -104,10 +104,10 @@ def get_db_connection(database: Database):
 
 def register_database(database: Database):
     try:
-        with get_db_connection(database) as conn:
+        with get_db_connection(metadata_db_connection_info) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                       INSERT INTO public.database (host, port, "user", password, dbname, "schema", date_created)
+                       INSERT INTO "database" (host, port, "user", password, dbname, "schema", date_created)
                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                    """, (
                     database.host,

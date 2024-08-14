@@ -10,7 +10,7 @@ router = APIRouter()
 def add_database(database: Database, include_values: bool = False):
     try:
         # register_database(database)
-        # embedd_database(database, include_values)
+        embedd_database(database, include_values)
         insert_tables_with_foreign_keys(database)
         insert_columns(database)
         return {"status": "success"}
