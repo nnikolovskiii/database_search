@@ -104,7 +104,7 @@ def get_db_connection(database: Database):
 
 def register_database(database: Database):
     try:
-        with get_db_connection(metadata_db_connection_info) as conn:
+        with get_db_connection(database) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                        INSERT INTO public.database (host, port, "user", password, dbname, "schema", date_created)
@@ -144,27 +144,49 @@ def fetch_all(cursor, query: str, params: Tuple = ()) -> List[Dict[str, Any]]:
     return cursor.fetchall()
 
 
-def get_tables_with_foreign_keys(database: Database) -> Dict[str, Any]:
+def get_tables_with_foreign_keys(
+        database: Database
+) -> Dict[str, Any]:
     with get_db_connection(database) as conn:
         with conn.cursor() as cur:
-            tables = fetch_all(cur, """
-                SELECT table_name FROM information_schema.tables WHERE table_schema = %s;
+            cur.execute("""
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = %s;
             """, (database.table_schema,))
-            tables = [table['table_name'] for table in tables]
+
+            tables = cur.fetchall()
+            tables_names = [table[0] for table in tables]
 
             all_foreign_keys = {}
-            for table in tables:
-                foreign_keys = fetch_all(cur, """
-                    SELECT kcu.column_name, ccu.table_name AS foreign_table_name
-                    FROM information_schema.table_constraints tc
-                    JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
-                    JOIN information_schema.constraint_column_usage ccu ON ccu.constraint_name = tc.constraint_name
-                    WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = %s AND tc.table_schema = %s;
+
+            for table in tables_names:
+                cur.execute("""
+                SELECT 
+                tc.constraint_name, 
+                kcu.column_name, 
+                ccu.table_name AS foreign_table_name
+                FROM information_schema.table_constraints AS tc 
+                JOIN information_schema.key_column_usage AS kcu
+                ON tc.constraint_name = kcu.constraint_name
+                JOIN information_schema.constraint_column_usage AS ccu 
+                ON ccu.constraint_name = tc.constraint_name
+                WHERE tc.constraint_type = 'FOREIGN KEY' 
+                AND tc.table_name = %s
+                AND tc.table_schema = %s;
                 """, (table, database.table_schema))
 
-                all_foreign_keys[table] = foreign_keys or []
+                foreign_keys = cur.fetchall()
 
-            return all_foreign_keys
+                if foreign_keys:
+                    all_foreign_keys[table] = foreign_keys
+                else:
+                    all_foreign_keys[table] = []
+
+        cur.close()
+        conn.close()
+
+    return all_foreign_keys
 
 
 def get_tables(database: Database) -> List[str]:
