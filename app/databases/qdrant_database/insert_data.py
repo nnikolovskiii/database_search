@@ -86,9 +86,19 @@ def embedd_database(database: Database, include_values: bool):
         logging.info("Collection created successfully.")
     except Exception as e:
         logging.error(f"Error during collection creation: {e}")
-
-    print("test")
-    embedd_table_names(database)
-    embedd_columns(database)
+    try:
+        embedd_table_names(database)
+        logging.info("Tables embedded successfully.")
+    except Exception as e:
+        logging.error(f"Error during tables embedding: {e}")
+    try:
+        embedd_columns(database)
+        logging.info("Columns embedded successfully.")
+    except Exception as e:
+        logging.error(f"Error during columns embedding: {e}")
     if include_values:
-        embedd_string_values(database)
+        try:
+            embedd_string_values(database)
+            logging.info("Values embedded successfully.")
+        except Exception as e:
+            logging.error(f"Error during values embedding: {e}")
