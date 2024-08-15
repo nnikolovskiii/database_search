@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List, Dict, Any
 import uuid
 
@@ -8,14 +9,20 @@ import requests
 from app.models.outputs import SearchOutput
 from app.openai.embedding import embedd_content
 
-client = QdrantClient(url="http://localhost:6333")
+client = QdrantClient(url="http://localhost:6333", timeout=60)
 
 
 def create_collection(collection_name: str):
-    client.create_collection(
-        collection_name=collection_name,
-        vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
-    )
+    try:
+        logging.info(f"Creating collection: {collection_name}")
+        client.create_collection(
+            collection_name=collection_name,
+            vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
+        )
+        logging.info(f"Collection {collection_name} created.")
+    except Exception as e:
+        logging.error(f"Failed to create collection {collection_name}: {e}")
+        raise
 
 
 def get_collection(collection_name: str):

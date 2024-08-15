@@ -195,7 +195,7 @@ def get_tables(database: Database) -> List[str]:
             tables = fetch_all(cur, """
                 SELECT table_name FROM information_schema.tables WHERE table_schema = %s;
             """, (database.table_schema,))
-            return [table['table_name'] for table in tables]
+            return [table[0] for table in tables]
 
 
 def get_active_table_names():

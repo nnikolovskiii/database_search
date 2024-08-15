@@ -1,3 +1,5 @@
+import logging
+
 from app.databases.postgres_database.database_connection import (
     get_tables,
     get_columns_by_table,
@@ -10,48 +12,82 @@ from app.databases.qdrant_database.qdrant import upsert_record, create_collectio
 from tqdm import tqdm
 
 
-def embedd_table_names(database: Database):
+def embedd_table_names(database: Database, batch_size: int = 10):
     tables = get_tables(database)
     collection_name = database.dbname
-    for table_name in tqdm(tables, desc="Embedding Table Names"):
-        metadata = {"table_name": table_name}
-        vector = embedd_content(table_name)
-        upsert_record(vector, metadata, collection_name)
+
+    for i in range(0, len(tables), batch_size):
+        batch = tables[i:i + batch_size]
+
+        for table_name in tqdm(batch, desc=f"Embedding Tables {i + 1}-{i + len(batch)}"):
+            metadata = {"table_name": table_name}
+            try:
+                vector = embedd_content(table_name)
+                upsert_record(vector, metadata, collection_name)
+            except Exception as e:
+                print(f"Error embedding table {table_name}: {e}")
+                continue
 
 
-def embedd_columns(database: Database):
+def embedd_columns(database: Database, batch_size: int = 10):
     tables = get_tables(database)
     collection_name = database.dbname
-    for table_name in tqdm(tables, desc="Embedding Columns"):
-        columns = get_columns_by_table(database, table_name)
-        for column in columns:
-            metadata = {
-                "table_name": table_name,
-                "column_name": column.name
-            }
-            vector = embedd_content(column.name)
-            upsert_record(vector, metadata, collection_name)
 
+    for i in range(0, len(tables), batch_size):
+        batch = tables[i:i + batch_size]
 
-def embedd_string_values(database: Database):
-    tables = get_tables(database)
-    collection_name = database.dbname
-    for table_name in tqdm(tables, desc="Embedding String Values by Table"):
-        char_varchar_text_columns = get_char_varchar_text_columns(database, table_name)
-        for column_name in tqdm(char_varchar_text_columns, desc=f"Processing {table_name}", leave=False):
-            column_values = get_column_values(database, table_name, column_name)
-            for value in tqdm(column_values, desc=f"Embedding {column_name} Values", leave=False):
+        for table_name in tqdm(batch, desc=f"Embedding Columns in Tables {i + 1}-{i + len(batch)}"):
+            columns = get_columns_by_table(database, table_name)
+            for column in columns:
                 metadata = {
                     "table_name": table_name,
-                    "column_name": column_name,
-                    "value": value
+                    "column_name": column.name
                 }
-                vector = embedd_content(value)
-                upsert_record(vector, metadata, collection_name)
+                try:
+                    vector = embedd_content(column.name)
+                    upsert_record(vector, metadata, collection_name)
+                except Exception as e:
+                    print(f"Error embedding column {column.name} in table {table_name}: {e}")
+                    continue
+
+
+def embedd_string_values(database: Database, batch_size: int = 10):
+    tables = get_tables(database)
+    collection_name = database.dbname
+
+    for i in range(0, len(tables), batch_size):
+        batch = tables[i:i + batch_size]
+
+        for table_name in tqdm(batch, desc=f"Embedding String Values in Tables {i + 1}-{i + len(batch)}"):
+            char_varchar_text_columns = get_char_varchar_text_columns(database, table_name)
+            for column_name in tqdm(char_varchar_text_columns, desc=f"Processing {table_name}", leave=False):
+                column_values = get_column_values(database, table_name, column_name)
+                for j in range(0, len(column_values), batch_size):
+                    value_batch = column_values[j:j + batch_size]
+
+                    for value in tqdm(value_batch, desc=f"Embedding {column_name} Values", leave=False):
+                        metadata = {
+                            "table_name": table_name,
+                            "column_name": column_name,
+                            "value": value
+                        }
+                        try:
+                            vector = embedd_content(value)
+                            upsert_record(vector, metadata, collection_name)
+                        except Exception as e:
+                            print(f"Error embedding value {value} in column {column_name} of table {table_name}: {e}")
+                            continue
 
 
 def embedd_database(database: Database, include_values: bool):
-    create_collection(database.dbname)
+    logging.info("Starting the embedding process...")
+    try:
+        create_collection(database.dbname)
+        logging.info("Collection created successfully.")
+    except Exception as e:
+        logging.error(f"Error during collection creation: {e}")
+
+    print("test")
     embedd_table_names(database)
     embedd_columns(database)
     if include_values:
