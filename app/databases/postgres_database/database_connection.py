@@ -35,23 +35,23 @@ metadata_db_connection_info = Database(
 
 def get_database_info_by_name(dbname: str) -> Optional[Database]:
     query = """
-    SELECT * FROM public.database WHERE dbname = %s;
+    SELECT * FROM database WHERE dbname = %s;
     """
 
-    with psycopg2.connect(metadata_db_connection_info) as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+    with get_db_connection(metadata_db_connection_info) as conn:
+        with conn.cursor() as cur:
             cur.execute(query, (dbname,))
             result = cur.fetchone()
 
             if result:
                 return Database(
-                    dbname=result['dbname'],
-                    user=result['user'],
-                    password=result['password'],
-                    host=result['host'],
-                    port=result['port'],
-                    table_schema=result['table_schema'],
-                    date_created=result['date_created']
+                    dbname=result[0],
+                    user=result[1],
+                    password=result[2],
+                    host=result[3],
+                    port=result[4],
+                    table_schema=result[5],
+                    date_created=result[6]
                 )
             else:
                 return None
@@ -62,6 +62,7 @@ class Column(BaseModel):
     name: str
     data_type: str
     is_nullable: bool
+    collection_name: str
     foreign_key_table: Optional[str]
     is_primary_key: bool = False
 
@@ -80,7 +81,7 @@ class Column(BaseModel):
 @dataclass(frozen=True)
 class Table(BaseModel):
     name: str
-    columns: Tuple[Column]
+    columns: Tuple[Column, ...]
 
     def __str__(self):
         columns_str = "\n  ".join(str(column) for column in self.columns)
@@ -139,7 +140,7 @@ def get_all_registered_databases():
         return []
 
 
-def fetch_all(cursor, query: str, params: Tuple = ()) -> List[Dict[str, Any]]:
+def fetch_all(cursor, query: str, params: Tuple = ()) -> List[Dict[Any, Any]]:
     cursor.execute(query, params)
     return cursor.fetchall()
 

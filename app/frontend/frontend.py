@@ -1,6 +1,5 @@
 import streamlit as st
-import time
-from app.chains.create_sql_query_chain import create_sql_query
+import requests
 from app.databases.postgres_database.database_connection import get_all_registered_databases
 
 st.set_page_config(page_title="Ask SQL generator", page_icon="random", layout="centered")
@@ -80,15 +79,21 @@ if prompt:
     )
 
     try:
-        time.sleep(2)
-        response = create_sql_query(selected_database, prompt)
-    except Exception as e:
-        response = f"An error occurred: {e}"
+        url = f"http://localhost:8000/chat/{selected_database}?prompt={prompt}"
+        response = requests.post(url)
+        if response.status_code == 200:
+            response_data = response.json()
+            query = response_data.get("query", "No query generated")
+        else:
+            query = f"Error: {response.status_code} - {response.text}"
 
-    st.session_state.chat_history[-1]["response"] = response
+    except Exception as e:
+        query = f"An error occurred: {e}"
+
+    st.session_state.chat_history[-1]["response"] = query
 
     typing_indicator.empty()
 
     st.markdown(
-        f'<div class="chat-container"><div class="chat-bubble bot-bubble">{response}</div></div>',
+        f'<div class="chat-container"><div class="chat-bubble bot-bubble">{query}</div></div>',
         unsafe_allow_html=True)

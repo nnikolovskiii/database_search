@@ -10,58 +10,66 @@ from app.databases.qdrant_database.qdrant import search_embeddings, SearchOutput
 from app.utils.json_extraction import trim_and_load_json
 
 
-def create_sql_query(collection_name: str, query: str):
-    entities = ner_chain(query)
-    tables_objs: List[SearchOutput] = []
-    columns_objs: List[SearchOutput] = []
-    values_objs: List[SearchOutput] = []
+def create_sql_query(collection_name: str, query: str) -> str:
+    try:
+        entities = ner_chain(query)
+        tables_objs: List[SearchOutput] = []
+        columns_objs: List[SearchOutput] = []
+        values_objs: List[SearchOutput] = []
 
-    for elem in entities:
-        tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3,
-                                             collection_name=collection_name))
-        columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3,
-                                              collection_name=collection_name))
-        values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3,
-                                             collection_name=collection_name))
+        for elem in entities:
+            tables_objs.extend(search_embeddings(query=elem, search_type="table_name", score_threshold=0.2, top_k=3,
+                                                 collection_name=collection_name))
+            columns_objs.extend(search_embeddings(query=elem, search_type="column_name", score_threshold=0.2, top_k=3,
+                                                  collection_name=collection_name))
+            values_objs.extend(search_embeddings(query=elem, search_type="value", score_threshold=0.8, top_k=3,
+                                                 collection_name=collection_name))
 
-    tables = _get_tables_in_paths(
-        {table.table_name for table in tables_objs} | {col.table_name for col in columns_objs})
-    table_info = "\n".join([str(table) for table in tables])
+        tables = _get_tables_in_paths(
+            {table.table_name for table in tables_objs} | {col.table_name for col in columns_objs}, collection_name)
+        table_info = "\n".join([str(table) for table in tables])
 
-    validation_output = validate_info_chain(table_info=table_info, question=query)
+        validation_output = validate_info_chain(table_info=table_info, question=query)
 
-    if validation_output.verdict == "no":
-        missing_tables_objs: Set[SearchOutput] = set()
+        if validation_output.verdict == "no":
+            missing_tables_objs: Set[SearchOutput] = set()
 
-        for table in validation_output.missing_tables:
-            missing_tables_objs.update(
-                search_embeddings(
-                    query=table,
-                    search_type="table_name",
-                    score_threshold=0.2,
-                    collection_name=collection_name)
-            )
+            for table in validation_output.missing_tables:
+                missing_tables_objs.update(
+                    search_embeddings(
+                        query=table,
+                        search_type="table_name",
+                        score_threshold=0.2,
+                        collection_name=collection_name)
+                )
 
-        missing_tables = _get_tables_in_paths({table.table_name for table in missing_tables_objs})
-        tables.update(missing_tables)
+            missing_tables = _get_tables_in_paths({table.table_name for table in missing_tables_objs}, collection_name)
+            tables.update(missing_tables)
 
-    table_info = "\n".join([table.__str__() for table in tables])
-    proper_nouns = ", ".join([value.value for value in values_objs])
+        table_info = "\n".join([table.__str__() for table in tables])
+        proper_nouns = ", ".join([value.value for value in values_objs])
 
-    sql_prompt = postgresql_template(table_info, proper_nouns, query)
-    chat_output = chat_with_openai(sql_prompt)
-    json_data = trim_and_load_json(input_string=chat_output)
-    sql_output = SqlGenerationOutput(**json_data)
-    return run_query(collection_name, sql_output)
+        sql_prompt = postgresql_template(table_info, proper_nouns, query)
+        chat_output = chat_with_openai(sql_prompt)
+        json_data = trim_and_load_json(input_string=chat_output)
+        sql_output = SqlGenerationOutput(**json_data)
+
+        result = run_query(collection_name, sql_output)
+
+        return result
+
+    except Exception as e:
+        print(f"Attempt failed: {e}")
 
 
 def _get_tables_in_paths(
         table_names: Set[str],
+        collection_name: str,
 ) -> Set[Table]:
     tables: Set[Table] = set()
     for table_from in table_names:
         for table_to in table_names:
             if table_from != table_to:
-                tables.update(get_tables_in_path(table_from, table_to))
+                tables.update(get_tables_in_path(table_from, table_to, collection_name))
 
     return tables
