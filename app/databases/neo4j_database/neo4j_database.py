@@ -39,7 +39,7 @@ def create_node(node: Node):
     with driver.session() as session:
         if not node_exists(node):
             properties = _transform_properties(node.properties)
-            cypher_query = f"CREATE (n:{node.type} {{{properties}}}) RETURN n"
+            cypher_query = """CREATE (n:{node.type} {{{properties}}}) RETURN n"""
             session.run(cypher_query)
 
 
@@ -55,7 +55,7 @@ def node_exists(node: Node) -> bool:
 
         properties = _transform_properties(node.properties)
         cypher_query = f"MATCH (n:{label} {{{properties}}}) RETURN n"
-        result = session.run(cypher_query)
+        result = session.run(cypher_query, parameters={"properties": properties})
         return result.single() is not None
 
 
@@ -120,7 +120,7 @@ def find_shortest_path(
         return []
 
 
-def get_table_from_node(table_name: str, collection_name: str) -> Table:
+def get_table_from_node(table_name: str, collection_name: str) -> Optional[Table]:
     node = Node(
         type="Table",
         properties={"name": table_name, "collection_name": collection_name}
@@ -141,12 +141,13 @@ def get_table_from_node(table_name: str, collection_name: str) -> Table:
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
+        return None
 
 
 def get_tables_in_path(
         table1: str,
         table2: str,
         collection_name: str
-) -> List[Table]:
+) -> List[Table | None]:
     nodes = find_shortest_path(table1, table2, collection_name)
     return [get_table_from_node(node.properties["name"], collection_name) for node in nodes]

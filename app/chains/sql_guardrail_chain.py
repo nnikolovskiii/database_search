@@ -7,7 +7,7 @@ def guardrail_chain(
         query: str
 ) -> dict:
     prompt = sql_query_guardrail(question=query)
-    output = chat_with_openai(message=prompt)
+    output = chat_with_openai(message=prompt) or ""
     extracted_info = trim_and_load_json(output)
 
     if not isinstance(extracted_info, dict) or "verdict" not in extracted_info:

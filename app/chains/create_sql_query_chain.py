@@ -48,22 +48,22 @@ def extract_search_objects(entities: List[str], collection_name: str):
 
 
 def gather_tables_from_paths(tables_objs: List[SearchOutput], columns_objs: List[SearchOutput], collection_name: str) -> \
-        Set[Table]:
+        Set[Table | None]:
     table_names = {table.table_name for table in tables_objs} | {col.table_name for col in columns_objs}
     return _get_tables_in_paths(table_names, collection_name)
 
 
-def format_table_info(tables: Set[Table]) -> str:
+def format_table_info(tables: Set[Table | None]) -> str:
     return "\n".join([str(table) for table in tables])
 
 
 def format_proper_nouns(values_objs: List[SearchOutput]) -> str:
-    return ", ".join([value.value for value in values_objs])
+    return ", ".join([value.value for value in values_objs if value.value is not None])
 
 
 def generate_sql_query(table_info: str, proper_nouns: str, query: str) -> SqlGenerationOutput:
     sql_prompt = postgresql_template(table_info, proper_nouns, query)
-    chat_output = chat_with_openai(sql_prompt)
+    chat_output = chat_with_openai(sql_prompt) or ""
     json_data = trim_and_load_json(input_string=chat_output)
     sql_output = SqlGenerationOutput(**json_data)
     return sql_output
@@ -77,7 +77,7 @@ def execute_and_return_query_results(collection_name: str, sql_output: SqlGenera
     return json.dumps({"query": sql_output.query, "output": results})
 
 
-def find_missing_tables(validation_output: ValidationOutput, collection_name: str) -> Set[Table]:
+def find_missing_tables(validation_output: ValidationOutput, collection_name: str) -> Set[Table | None]:
     missing_tables_objs = set()
 
     for table in validation_output.missing_tables:
@@ -87,7 +87,7 @@ def find_missing_tables(validation_output: ValidationOutput, collection_name: st
     return _get_tables_in_paths({table.table_name for table in missing_tables_objs}, collection_name)
 
 
-def _get_tables_in_paths(table_names: Set[str], collection_name: str) -> Set[Table]:
+def _get_tables_in_paths(table_names: Set[str], collection_name: str) -> Set[Table | None]:
     tables = set()
 
     for table_from in table_names:

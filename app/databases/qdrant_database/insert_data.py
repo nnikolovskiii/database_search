@@ -23,7 +23,12 @@ def embedd_table_names(database: Database, batch_size: int = 10):
             metadata = {"table_name": table_name}
             try:
                 vector = embedd_content(table_name)
-                upsert_record(vector, metadata, collection_name)
+
+                if vector is not None:
+                    upsert_record(vector, metadata, collection_name)
+                else:
+                    raise ValueError(f"Embedding content failed for table: {table_name}")
+
             except Exception as e:
                 print(f"Error embedding table {table_name}: {e}")
                 continue
@@ -44,8 +49,14 @@ def embedd_columns(database: Database, batch_size: int = 10):
                     "column_name": column.name
                 }
                 try:
-                    vector = embedd_content(column.name)
-                    upsert_record(vector, metadata, collection_name)
+                    vector = embedd_content(table_name)
+
+                    if vector is not None:
+                        upsert_record(vector, metadata, collection_name)
+                    else:
+                        # Handle the None case (e.g., log an error or raise an exception)
+                        raise ValueError(f"Embedding content failed for table: {table_name}")
+
                 except Exception as e:
                     print(f"Error embedding column {column.name} in table {table_name}: {e}")
                     continue
@@ -72,8 +83,13 @@ def embedd_string_values(database: Database, batch_size: int = 10):
                             "value": value
                         }
                         try:
-                            vector = embedd_content(value)
-                            upsert_record(vector, metadata, collection_name)
+                            vector = embedd_content(table_name)
+
+                            if vector is not None:
+                                upsert_record(vector, metadata, collection_name)
+                            else:
+                                raise ValueError(f"Embedding content failed for table: {table_name}")
+
                         except Exception as e:
                             print(f"Error embedding value {value} in column {column_name} of table {table_name}: {e}")
                             continue

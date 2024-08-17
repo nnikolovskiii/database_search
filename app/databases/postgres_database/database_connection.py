@@ -218,7 +218,7 @@ def get_columns_by_table(database: Database, table_name: str) -> List[Column]:
                 JOIN pg_attribute a ON a.attnum = ANY(i.indkey)
                 WHERE i.indisprimary AND i.indrelid = %s::regclass;
             """, (table_name,))
-            primary_key_columns = {col['column_name'] for col in primary_key_columns}
+            primary_key_columns = [{'column_name': col['column_name']} for col in primary_key_columns]
 
             foreign_keys = fetch_all(cur, """
                 SELECT kcu.column_name, ccu.table_name AS foreign_table_name
@@ -283,7 +283,7 @@ def format_results(results: List[Tuple]) -> List[Tuple]:
     return formatted_results[:5]
 
 
-def format_column(col: Union[datetime, decimal.Decimal, any]) -> Union[str, any]:
+def format_column(col: Union[datetime, decimal.Decimal, Any]) -> Union[str, Any]:
     if isinstance(col, datetime):
         return col.strftime("%d.%m.%y %H:%M")
     elif isinstance(col, decimal.Decimal):

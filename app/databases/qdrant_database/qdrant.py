@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import uuid
 
 from qdrant_client import QdrantClient, models
@@ -51,7 +51,7 @@ def upsert_record(
 def search_embeddings(
         query: str,
         collection_name: str,
-        search_type: str = None,
+        search_type: Optional[str] = None,
         score_threshold: float = 0.6,
         top_k: int = 5
 ) -> list[SearchOutput]:

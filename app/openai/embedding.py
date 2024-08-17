@@ -2,12 +2,12 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
-from typing import List
+from typing import List, Optional
 
 
 def embedd_content(
         content: str
-) -> List[float]:
+) -> Optional[List[float]]:
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")
     url = 'https://api.openai.com/v1/embeddings'
@@ -28,4 +28,6 @@ def embedd_content(
         response_data = response.json()
         return response_data['data'][0]['embedding']
     else:
+        print(f"Error: {response.status_code} - {response.text}")
         response.raise_for_status()
+        return None
