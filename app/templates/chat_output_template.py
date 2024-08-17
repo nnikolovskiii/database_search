@@ -3,11 +3,11 @@ def chat_output_template(
         output: str
 ) -> str:
     return f"""
-    Generated SQL query:
-    
-    {query}
-    
-    Output:
-    
-    {output}
-    """
+           Generated SQL query:
+
+           {query}
+
+           Output:
+
+           {output}
+           """

@@ -1,5 +1,6 @@
+import decimal
 from datetime import datetime
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
@@ -8,7 +9,6 @@ from contextlib import contextmanager
 
 from app.models.enums.postgres_data_types import PostgresDataType
 from app.models.outputs import SqlGenerationOutput
-from app.templates.chat_output_template import chat_output_template
 
 
 @dataclass(frozen=True)
@@ -121,8 +121,8 @@ def register_database(database: Database):
                 ))
                 conn.commit()
     except psycopg2.Error as e:
-        print(f"Error: {e}")
         conn.rollback()
+        raise e
 
 
 def get_all_registered_databases():
@@ -233,6 +233,7 @@ def get_columns_by_table(database: Database, table_name: str) -> List[Column]:
                 Column(
                     name=col['column_name'],
                     data_type=PostgresDataType(col['data_type']),
+                    collection_name=database.dbname,
                     is_nullable=(col['is_nullable'] == 'YES'),
                     is_primary_key=(col['column_name'] in primary_key_columns),
                     foreign_key_table=foreign_keys_dict.get(col['column_name'])
@@ -257,22 +258,35 @@ def get_column_values(database: Database, table_name: str, column_name: str) -> 
             return [value[column_name] for value in values if value[column_name] is not None]
 
 
-def run_query(dbname: str, sql_output: SqlGenerationOutput) -> str:
+def run_query(dbname: str, sql_output: SqlGenerationOutput) -> Union[List[Tuple], str]:
     database = get_database_info_by_name(dbname)
     if not database:
-        raise ValueError(f"Database connection for '{dbname}' not found.")
+        return f"Database connection for '{dbname}' not found."
 
-    with get_db_connection(database) as conn:
-        with conn.cursor() as cur:
-            try:
+    try:
+        with get_db_connection(database) as conn:
+            with conn.cursor() as cur:
                 cur.execute(sql_output.query)
                 results = cur.fetchall()
-                conn.commit()
-                return chat_output_template(
-                    query=sql_output.query,
-                    output=results
-                )
-            except Exception as e:
-                conn.rollback()
-                print(sql_output.reason)
-                return str(e)
+                return format_results(results)
+
+    except Exception as e:
+        return f"SQL Execution Failed: {e}"
+
+
+def format_results(results: List[Tuple]) -> List[Tuple]:
+    formatted_results = []
+    for row in results:
+        formatted_row = tuple(format_column(col) for col in row)
+        formatted_results.append(formatted_row)
+
+    return formatted_results[:5]
+
+
+def format_column(col: Union[datetime, decimal.Decimal, any]) -> Union[str, any]:
+    if isinstance(col, datetime):
+        return col.strftime("%d.%m.%y %H:%M")
+    elif isinstance(col, decimal.Decimal):
+        return str(col)
+    else:
+        return col
