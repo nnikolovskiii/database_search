@@ -11,18 +11,6 @@ services:
     ports:
       - "5433:5432"
 
-  postgres:
-    image: postgres:latest
-    container_name: my_postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: database_search
-    ports:
-      - "9871:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   qdrant:
     image: qdrant/qdrant:latest
