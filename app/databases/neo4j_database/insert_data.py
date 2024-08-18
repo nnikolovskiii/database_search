@@ -1,21 +1,7 @@
-from typing import Tuple
 from app.databases.neo4j_database.neo4j_database import create_relationship, Node, Relationship, create_node
-from app.databases.postgres_database.database_connection import get_tables_with_foreign_keys, get_tables, \
-    get_columns_by_table, Database
-from pydantic import BaseModel
 
-
-class ForeignKey(BaseModel):
-    from_column: str
-    to_column: str
-    to_table: str
-
-    def __init__(self, data: Tuple[str]):
-        super().__init__(
-            from_column=data[0],
-            to_column=data[1],
-            to_table=data[2]
-        )
+from app.databases.postgres_database.service import get_tables_with_foreign_keys, get_tables, get_columns_by_table
+from app.models.database import Database, ForeignKey
 
 
 def insert_tables_with_foreign_keys(database: Database):

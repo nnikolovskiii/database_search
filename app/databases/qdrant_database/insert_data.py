@@ -1,12 +1,8 @@
 import logging
 
-from app.databases.postgres_database.database_connection import (
-    get_tables,
-    get_columns_by_table,
-    get_char_varchar_text_columns,
-    get_column_values,
-    Database
-)
+from app.databases.postgres_database.service import get_tables, get_columns_by_table, get_char_varchar_text_columns, \
+    get_column_values
+from app.models.database import Database
 from app.openai.embedding import embedd_content
 from app.databases.qdrant_database.qdrant import upsert_record, create_collection
 from tqdm import tqdm
@@ -54,7 +50,6 @@ def embedd_columns(database: Database, batch_size: int = 10):
                     if vector is not None:
                         upsert_record(vector, metadata, collection_name)
                     else:
-                        # Handle the None case (e.g., log an error or raise an exception)
                         raise ValueError(f"Embedding content failed for table: {table_name}")
 
                 except Exception as e:

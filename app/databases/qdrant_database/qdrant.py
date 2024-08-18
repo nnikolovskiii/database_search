@@ -112,3 +112,17 @@ def search_embeddings(
         results.append(result)
 
     return results
+
+
+def extract_search_objects(entities: List[str], collection_name: str):
+    tables_objs, columns_objs, values_objs = [], [], []
+
+    for entity in entities:
+        tables_objs.extend(search_embeddings(query=entity, search_type="table_name", score_threshold=0.2, top_k=3,
+                                             collection_name=collection_name))
+        columns_objs.extend(search_embeddings(query=entity, search_type="column_name", score_threshold=0.2, top_k=3,
+                                              collection_name=collection_name))
+        values_objs.extend(search_embeddings(query=entity, search_type="value", score_threshold=0.8, top_k=3,
+                                             collection_name=collection_name))
+
+    return tables_objs, columns_objs, values_objs

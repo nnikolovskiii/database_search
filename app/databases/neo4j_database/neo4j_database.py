@@ -4,7 +4,7 @@ from neo4j import GraphDatabase
 from pydantic import BaseModel
 from neo4j.graph import Node as Neo4jNode
 
-from app.databases.postgres_database.database_connection import Table, Column
+from app.models.database import Column, Table
 
 uri = "bolt://localhost:7687"
 username = "neo4j"
@@ -39,7 +39,7 @@ def create_node(node: Node):
     with driver.session() as session:
         if not node_exists(node):
             properties = _transform_properties(node.properties)
-            cypher_query = """CREATE (n:{node.type} {{{properties}}}) RETURN n"""
+            cypher_query = f"CREATE (n:{node.type} {{{properties}}}) RETURN n"
             session.run(cypher_query)
 
 
