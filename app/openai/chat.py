@@ -1,4 +1,6 @@
 import os
+from typing import Optional
+
 from dotenv import load_dotenv
 import requests
 import json
@@ -7,7 +9,7 @@ import json
 def chat_with_openai(
         message: str,
         system_message: str = "You are a helpful assistant."
-) -> str:
+) -> Optional[str]:
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")
     url = 'https://api.openai.com/v1/chat/completions'
@@ -38,3 +40,4 @@ def chat_with_openai(
         return response_data['choices'][0]['message']['content']
     else:
         response.raise_for_status()
+        return None

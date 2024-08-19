@@ -1,26 +1,32 @@
 import json
+import logging
 from typing import List, Dict, Any, Optional
 import uuid
 
-from dataclasses import dataclass
-
-from pydantic import BaseModel
 from qdrant_client import QdrantClient, models
 import requests
 
 from app.models.outputs import SearchOutput
 from app.openai.embedding import embedd_content
 
-client = QdrantClient(url="http://localhost:6333")
+client = QdrantClient(url="http://localhost:6333", timeout=60)
 
 
-def create_collection(
-        collection_name: str
-):
-    client.create_collection(
-        collection_name=collection_name,
-        vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
-    )
+def create_collection(collection_name: str):
+    try:
+        logging.info(f"Creating collection: {collection_name}")
+        client.create_collection(
+            collection_name=collection_name,
+            vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
+        )
+        logging.info(f"Collection {collection_name} created.")
+    except Exception as e:
+        logging.error(f"Failed to create collection {collection_name}: {e}")
+        raise
+
+
+def get_collection(collection_name: str):
+    return client.get_collection(collection_name)
 
 
 def upsert_record(
@@ -44,8 +50,8 @@ def upsert_record(
 
 def search_embeddings(
         query: str,
-        search_type: str = None,
-        collection_name: str = "database_search",
+        collection_name: str,
+        search_type: Optional[str] = None,
         score_threshold: float = 0.6,
         top_k: int = 5
 ) -> list[SearchOutput]:
@@ -106,3 +112,17 @@ def search_embeddings(
         results.append(result)
 
     return results
+
+
+def extract_search_objects(entities: List[str], collection_name: str):
+    tables_objs, columns_objs, values_objs = [], [], []
+
+    for entity in entities:
+        tables_objs.extend(search_embeddings(query=entity, search_type="table_name", score_threshold=0.2, top_k=3,
+                                             collection_name=collection_name))
+        columns_objs.extend(search_embeddings(query=entity, search_type="column_name", score_threshold=0.2, top_k=3,
+                                              collection_name=collection_name))
+        values_objs.extend(search_embeddings(query=entity, search_type="value", score_threshold=0.8, top_k=3,
+                                             collection_name=collection_name))
+
+    return tables_objs, columns_objs, values_objs

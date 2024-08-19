@@ -4,7 +4,7 @@ from neo4j import GraphDatabase
 from pydantic import BaseModel
 from neo4j.graph import Node as Neo4jNode
 
-from app.databases.postgres_database.database_connection import Table, Column
+from app.models.database import Column, Table
 
 uri = "bolt://localhost:7687"
 username = "neo4j"
@@ -55,7 +55,7 @@ def node_exists(node: Node) -> bool:
 
         properties = _transform_properties(node.properties)
         cypher_query = f"MATCH (n:{label} {{{properties}}}) RETURN n"
-        result = session.run(cypher_query)
+        result = session.run(cypher_query, parameters={"properties": properties})
         return result.single() is not None
 
 
@@ -85,16 +85,17 @@ def create_relationship(
 
 def find_shortest_path(
         table1: str,
-        table2: str
+        table2: str,
+        collection_name: str
 ) -> List[Node]:
     start_node = Node(
         type="Table",
-        properties={"name": table1}
+        properties={"name": table1, "collection_name": collection_name},
     )
 
     end_node = Node(
         type="Table",
-        properties={"name": table2}
+        properties={"name": table2, "collection_name": collection_name}
     )
 
     if node_exists(start_node) and node_exists(end_node):
@@ -119,10 +120,10 @@ def find_shortest_path(
         return []
 
 
-def get_table_from_node(table_name: str) -> Table:
+def get_table_from_node(table_name: str, collection_name: str) -> Optional[Table]:
     node = Node(
         type="Table",
-        properties={"name": table_name}
+        properties={"name": table_name, "collection_name": collection_name}
     )
 
     if node_exists(node):
@@ -140,23 +141,13 @@ def get_table_from_node(table_name: str) -> Table:
             return Table(name=table_name, columns=columns)
     else:
         print("The node does not exist.")
+        return None
 
 
 def get_tables_in_path(
         table1: str,
-        table2: str
-) -> List[Table]:
-    nodes = find_shortest_path(table1, table2)
-    return [get_table_from_node(node.properties["name"]) for node in nodes]
-
-
-def get_neighbours(node: Node) -> List[Dict[str, Any]]:
-    with driver.session() as session:
-        properties = _transform_properties(node.properties)
-        cypher_query = f"""
-        MATCH (n:{node.type} {{{properties}}})--(neighbour)
-        RETURN neighbour
-        """
-        result = session.run(cypher_query)
-        neighbours = [record["neighbour"]._properties for record in result]
-        return neighbours
+        table2: str,
+        collection_name: str
+) -> List[Table | None]:
+    nodes = find_shortest_path(table1, table2, collection_name)
+    return [get_table_from_node(node.properties["name"], collection_name) for node in nodes]

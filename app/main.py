@@ -1,10 +1,12 @@
 from fastapi import FastAPI
-from app.api.endpoints import chat
+
+from app.api.endpoints import chat, embedd_database
 import uvicorn
 import subprocess
 import threading
 
 app = FastAPI()
+app.include_router(embedd_database.router, prefix="/database", tags=["database"])
 
 app.include_router(chat.router, prefix="/chat", tags=["items"])
 

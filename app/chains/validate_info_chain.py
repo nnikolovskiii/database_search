@@ -9,7 +9,7 @@ def validate_info_chain(
         question: str
 ) -> ValidationOutput:
     prompt = validate_info_prompt(table_info=table_info, question=question)
-    chat_output = chat_with_openai(prompt)
+    chat_output = chat_with_openai(prompt) or ""
     json_data = trim_and_load_json(input_string=chat_output)
     validation_output = ValidationOutput(**json_data)
 

@@ -17,21 +17,21 @@ def ner_prompt(text: str):
     Show the inventory levels of all warehouses with a capacity greater than 1000 units.
 
     Output:
-    {{ "information": ["inventory levels", "warehouses", "capacity", "greater than 1000 units"] }}
+    {{ "information": ["inventory levels", "warehouses", "capacity"] }}
 
     Example 3:
     Input:
     List all transactions involving customers who have a loyalty score above 80.
 
     Output:
-    {{ "information": ["transactions", "customers", "loyalty score", "above 80"] }}
+    {{ "information": ["transactions", "customers", "loyalty score"] }}
 
     Example 4:
     Input:
     Find all suppliers who provide more than 50 different products.
 
     Output:
-    {{ "information": ["suppliers", "provide", "more than 50 different products"] }}
+    {{ "information": ["suppliers", "provide", "products"] }}
 
     Example 5:
     Input:

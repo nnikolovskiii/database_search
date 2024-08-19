@@ -9,8 +9,8 @@ def ner_chain(
         query: str
 ) -> List[str]:
     prompt = ner_prompt(text=query)
-    output = chat_with_openai(message=prompt)
-    extracted_info = trim_and_load_json(output)
+    chat_output = chat_with_openai(prompt) or ""
+    extracted_info = trim_and_load_json(input_string=chat_output)
 
     if not isinstance(extracted_info, dict) or "information" not in extracted_info:
         raise ValueError("Invalid extracted information format.")

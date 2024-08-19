@@ -1,18 +1,16 @@
 version: '3.8'
 
 services:
-  postgres:
+  database_search_db:
     image: postgres:latest
-    container_name: my_postgres
+    container_name: database_search_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sample-postgres_database
+      POSTGRES_DB: database_search_db
     ports:
-      - "9871:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - "5433:5432"
+
 
   qdrant:
     image: qdrant/qdrant:latest
